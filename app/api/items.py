@@ -18,14 +18,40 @@ async def read_items(request: Request, db: Session = Depends(get_db)):
     items = db.query(Item).all()
     return templates.TemplateResponse('items.html', {'request': request, 'items': items})
 
-@router.get('/create', response_class=HTMLResponse)
+@router.post('/create', response_class=HTMLResponse)
 async def create_item(request: Request, db: Session = Depends(get_db)):
-    """
-    Create a new item and redirect to the items list.
-    """
     form_data = await request.form()
-    new_item = Item(name=form_data.get('name'), description=form_data.get('description'))
+    name = form_data.get('name')
+    description = form_data.get('description')
+    
+    if not name:
+        # простая проверка
+        return templates.TemplateResponse('items.html', {
+            'request': request,
+            'items': db.query(Item).all(),
+            'error': 'Название не может быть пустым'
+        })
+    
+    new_item = Item(name=name, description=description)
     db.add(new_item)
     db.commit()
     db.refresh(new_item)
+    
     return templates.TemplateResponse('items.html', {'request': request, 'items': db.query(Item).all()})
+
+@router.delete('/delete/{item_id}', response_class=HTMLResponse)
+async def delete_item(item_id: int, db: Session = Depends(get_db), request: Request = None):
+    """
+    Delete an item by its ID.
+    """
+    item = db.query(Item).filter(Item.id == item_id).first()
+    if not item:
+        raise HTTPException(status_code=404, detail="Item not found")
+    
+    db.delete(item)
+    db.commit()
+    
+    if request:
+        return templates.TemplateResponse('items.html', {'request': request, 'items': db.query(Item).all()})
+    
+    return {"message": "Item deleted successfully"}
