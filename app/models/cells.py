@@ -1,6 +1,6 @@
 from sqlalchemy import Column, ForeignKey, Integer, String, Float
 from sqlalchemy.orm import relationship
-from database.db import Base
+from app.database import Base
 
 class Cell(Base):
     __tablename__ = 'cells'
@@ -12,7 +12,7 @@ class Cell(Base):
 
     # relationships
     item_id = Column(Integer, ForeignKey('items.id'))
-    item = relationship("Item", back_populates="cells")
-    batches = relationship("Batch", back_populates="cell")
+    items = relationship("Item", back_populates="cells")
+    batches = relationship("Batch", back_populates="cells")
     
     

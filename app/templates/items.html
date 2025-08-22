@@ -1,0 +1,49 @@
+{% extends "index.html" %}
+{% block content %}
+  <div class="flex items-center justify-between mb-6">
+    <h3 class="text-2xl font-bold">Товары</h3>
+    <!-- Кнопка для открытия формы -->
+    <button 
+      onclick="document.getElementById('createForm').classList.toggle('hidden')" 
+      class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+      + Добавить товар
+    </button>
+  </div>
+
+  <!-- Форма создания -->
+  <div id="createForm" class="hidden bg-white rounded-2xl shadow p-6 mb-8">
+    <form method="get" action="/items/create" class="grid gap-4 md:grid-cols-2">
+      <div class="col-span-2">
+        <label class="block text-sm font-medium text-gray-700">Название</label>
+        <input type="text" name="name" required 
+               class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
+      </div>
+      <div class="col-span-2">
+        <label class="block text-sm font-medium text-gray-700">Описание</label>
+        <textarea name="description" rows="3"
+                  class="mt-1 w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"></textarea>
+      </div>
+      <div class="col-span-2 flex justify-end">
+        <button type="submit" 
+                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+          Создать
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Список товаров -->
+  {% if items %}
+    <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      {% for item in items %}
+        <div class="bg-white rounded-2xl shadow p-6 hover:shadow-md transition">
+          <h4 class="text-lg font-semibold mb-2">{{ item.name }}</h4>
+          <p class="text-gray-600 mb-2">{{ item.description or "Нет описания" }}</p>
+          <p class="text-gray-800 font-medium">Количество: {{ item.quantity }}</p>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-gray-600 italic">Товары отсутствуют</div>
+  {% endif %}
+{% endblock %}

@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from sqlalchemy.orm import relationship
-from database.db import Base
+from app.database import Base
 
 class Batch(Base):
     __tablename__ = 'batches'
@@ -11,7 +11,7 @@ class Batch(Base):
     quantity = Column(Float, nullable=False)
 
     cell_id = Column(Integer, ForeignKey('cells.id'), nullable=False)
-    cells = relationship("Cell", back_populates="batch")
+    cells = relationship("Cell", back_populates="batches")
     item_id = Column(Integer, ForeignKey('items.id'), nullable=False)
-    items = relationship("Item", back_populates="batch")
+    items = relationship("Item", back_populates="batches")
     

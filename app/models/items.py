@@ -1,4 +1,4 @@
-from database.db import Base
+from app.database import Base
 from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from sqlalchemy.orm import relationship
 
@@ -11,7 +11,7 @@ class Item(Base):
     quantity = Column(Float, default=0.0)
     
     #relationships
-    cells = relationship("Cell", back_populates="item")
-    batches = relationship("Batch", back_populates="item")
+    cells = relationship("Cell", back_populates="items")
+    batches = relationship("Batch", back_populates="items")
     
     

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WMS Панель управления</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="/static/favicon.ico">
+</head>
+<body class="bg-gray-50 text-gray-900 flex h-screen">
+
+  <!-- Боковое меню -->
+  <aside class="w-64 bg-white shadow-lg hidden md:flex flex-col">
+    <div class="h-16 flex items-center justify-center border-b">
+      <h1 class="text-xl font-bold text-blue-600">WMS</h1>
+    </div>
+    <nav class="flex-1 px-4 py-6 space-y-2">
+      <a href="/" class="block px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 font-medium">Главная</a>
+      <a href="/items" class="block px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 font-medium">Товары</a>
+      <a href="/cells" class="block px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 font-medium">Ячейки</a>
+      <a href="/batches" class="block px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 font-medium">Партии</a>
+    </nav>
+    <div class="p-4 border-t">
+      <button class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">Выйти</button>
+    </div>
+  </aside>
+
+  <!-- Основная часть -->
+  <div class="flex-1 flex flex-col">
+    
+    <!-- Верхняя панель -->
+    <header class="h-16 bg-white border-b flex items-center justify-between px-6 shadow-sm">
+      <button class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+      <h2 class="text-lg font-semibold">Панель управления</h2>
+      <div class="flex items-center space-x-4">
+        <span class="hidden sm:block text-gray-600">Администратор</span>
+        <img src="https://i.pravatar.cc/40" class="w-10 h-10 rounded-full border" alt="avatar">
+      </div>
+    </header>
+
+    <!-- Контент -->
+    <main class="p-6 flex-1 overflow-y-auto">
+      {% block content %}
+      <h3 class="text-xl font-bold mb-6">Добро пожаловать в WMS</h3>
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+        <!-- Карточка: Товары -->
+        <div class="bg-white rounded-2xl shadow p-6 hover:shadow-md transition">
+          <h4 class="text-lg font-semibold mb-2">Товары</h4>
+          <p class="text-gray-600 mb-4">Управление товарами на складе</p>
+          <a href="/items" class="text-blue-600 font-medium hover:underline">Перейти к товарам →</a>
+        </div>
+
+        <!-- Карточка: Ячейки -->
+        <div class="bg-white rounded-2xl shadow p-6 hover:shadow-md transition">
+          <h4 class="text-lg font-semibold mb-2">Ячейки</h4>
+          <p class="text-gray-600 mb-4">Места хранения и стеллажи</p>
+          <a href="/cells" class="text-blue-600 font-medium hover:underline">Перейти к ячейкам →</a>
+        </div>
+
+        <!-- Карточка: Партии -->
+        <div class="bg-white rounded-2xl shadow p-6 hover:shadow-md transition">
+          <h4 class="text-lg font-semibold mb-2">Партии</h4>
+          <p class="text-gray-600 mb-4">Приход и отгрузка партий</p>
+          <a href="/batches" class="text-blue-600 font-medium hover:underline">Перейти к партиям →</a>
+        </div>
+
+      </div>
+      {% endblock %}
+    </main>
+  </div>
+</body>
+</html>

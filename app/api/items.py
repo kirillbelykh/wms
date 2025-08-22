@@ -1,7 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends, Request
-from fastapi.templating import Jinja2Templates, HTMLResponse
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
-from app.database import get_db
+from app.database.create_db import get_db
 from app.models import Item
 
 router = APIRouter(prefix='/items', tags=['items'])
