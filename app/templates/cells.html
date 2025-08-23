@@ -5,11 +5,11 @@
   <h1 class="text-3xl font-bold mb-6">Ячейки склада</h1>
 
   <!-- Форма добавления новой ячейки -->
-  <form id="create-cell-form" class="flex gap-2 mb-6">
+  <form id="create-cell-form" class="flex flex-wrap gap-2 mb-6">
     <input type="text" name="name" placeholder="Название ячейки" required
-           class="border rounded px-3 py-2 flex-1">
+           class="border rounded px-3 py-2 flex-1 min-w-[150px]">
     <input type="text" name="description" placeholder="Описание"
-           class="border rounded px-3 py-2 flex-1">
+           class="border rounded px-3 py-2 flex-1 min-w-[150px]">
     <input type="number" step="0.1" name="capacity" placeholder="Вместимость"
            class="border rounded px-3 py-2 w-32">
     <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Создать</button>
@@ -26,6 +26,8 @@
       </div>
       <button onclick="deleteCell({{ cell.id }}, this)" class="text-red-500 hover:text-red-700 ml-4">🗑️</button>
     </li>
+    {% else %}
+    <li class="text-gray-500">Ячеек пока нет</li>
     {% endfor %}
   </ul>
 </div>
@@ -45,6 +47,8 @@ form.addEventListener('submit', async (e) => {
       body: formData
     });
 
+    if (!response.ok) throw new Error('Ошибка при создании');
+
     const cell = await response.json();
     if (cell.id) {
       const li = document.createElement('li');
@@ -53,7 +57,7 @@ form.addEventListener('submit', async (e) => {
       li.innerHTML = `
         <div>
           <h2 class="font-semibold text-lg">${cell.name}</h2>
-          <p class="text-gray-500">${cell.description}</p>
+          <p class="text-gray-500">${cell.description || 'Нет описания'}</p>
           <p class="text-sm text-gray-400">Вместимость: ${cell.capacity}</p>
         </div>
         <button onclick="deleteCell(${cell.id}, this)" class="text-red-500 hover:text-red-700 ml-4">🗑️</button>
@@ -63,7 +67,7 @@ form.addEventListener('submit', async (e) => {
     }
   } catch (err) {
     console.error(err);
-    alert('Ошибка при создании ячейки');
+    alert(err.message || 'Ошибка при создании ячейки');
   }
 });
 

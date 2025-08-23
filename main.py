@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.templating import Jinja2Templates
 from app.api.items import router as items_router
 from app.api.cells import router as cells_router
+from app.api.batches import router as batches_router
 
 templates = Jinja2Templates(directory='app/templates')
 
@@ -18,3 +19,4 @@ async def root():
 
 app.include_router(items_router)
 app.include_router(cells_router)
+app.include_router(batches_router)

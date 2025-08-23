@@ -13,5 +13,6 @@ class Item(Base):
     #relationships
     cells = relationship("Cell", back_populates="items")
     batches = relationship("Batch", back_populates="items")
+    receivings = relationship("Receiving", back_populates="items")
     
     

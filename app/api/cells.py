@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from app.database.create_db import get_db
@@ -24,7 +24,7 @@ async def read_cell(cell_id: int, request: Request, db: Session = Depends(get_db
     
     return templates.TemplateResponse('cells_detail.html', {'request': request, 'cell': cell})
 
-@router.post('/', response_class=HTMLResponse)
+@router.post('/', response_class=JSONResponse)
 async def create_cell(request: Request, db: Session = Depends(get_db)):
     form_data = await request.form()
     new_cell = Cell(
@@ -37,8 +37,14 @@ async def create_cell(request: Request, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_cell)
     
-    return templates.TemplateResponse('cells.html', {'request': request, 'cell': new_cell})
-
+    return JSONResponse(
+        {
+            "id": new_cell.id,
+            "name": new_cell.name,
+            "description": new_cell.description or "",
+            "capacity": new_cell.capacity
+        }
+    )
 
 @router.delete('/delete/{cell_id}', response_class=HTMLResponse)
 async def delete_cell(cell_id: int, request: Request, db: Session = Depends(get_db)):

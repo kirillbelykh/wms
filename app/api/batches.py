@@ -1,51 +1,55 @@
-from fastapi import APIRouter, HTTPException, Depends, Request
-from fastapi.responses import HTMLResponse
-from fastapi.templating import Jinja2Templates
+from fastapi import APIRouter, Request, Depends, Form, HTTPException
+from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session
 from app.database.create_db import get_db
-from app.models import Batch
+from app.models import Batch, Cell, Item
+from starlette import status
+from fastapi.templating import Jinja2Templates
 
-router = APIRouter(prefix='/batches', tags=['batches'])
+router = APIRouter(prefix="/batches", tags=["batches"])
+templates = Jinja2Templates(directory="app/templates")
 
-templates = Jinja2Templates(directory='app/templates')
 
-@router.get('/', response_class=HTMLResponse)
+@router.get("/", response_class=HTMLResponse)
 async def read_batches(request: Request, db: Session = Depends(get_db)):
     batches = db.query(Batch).all()
-    return templates.TemplateResponse('batches.html', {'request': request, 'batches': batches})
-    
-    
-@router.get('/{batch_id}', response_class=HTMLResponse)
-async def read_batch(batch_id: int, request: Request, db: Session = Depends(get_db)):
-    batch = db.query(Batch).filter(Batch.id == batch_id).first()
-    if not batch:
-        raise HTTPException(status_code=404, detail="Batch not found")
-    
-    return templates.TemplateResponse('batches_detail.html', {'request': request, 'batch': batch})
-
-@router.post('/', response_class=HTMLResponse)
-async def create_batch(request: Request, db: Session = Depends(get_db)):
-    form_data = await request.form()
-    new_batch = Batch(
-        name=form_data.get('name'),
-        description=form_data.get('description'),
-        quantity=int(form_data.get('quantity', 0))
+    return templates.TemplateResponse(
+        "batches.html",
+        {"request": request, "batches": batches, "cells": db.query(Cell).all(), "items": db.query(Item).all()},
     )
-    
+
+
+@router.post("/", response_class=HTMLResponse)
+async def create_batch(
+    request: Request,
+    name: str = Form(...),
+    description: str = Form(""),
+    quantity: int = Form(...),
+    cell_id: int = Form(...),
+    item_id: int = Form(...),
+    db: Session = Depends(get_db),
+):
+    new_batch = Batch(
+        name=name,
+        description=description,
+        quantity=quantity,
+        cell_id=cell_id,
+        item_id=item_id,
+    )
     db.add(new_batch)
     db.commit()
     db.refresh(new_batch)
-    
-    return templates.TemplateResponse('batches.html', {'request': request, 'batch': new_batch})
 
-@router.delete('/delete/{batch_id}', response_class=HTMLResponse)
+    return RedirectResponse(url="/batches/", status_code=status.HTTP_303_SEE_OTHER)
+
+
+@router.get("/delete/{batch_id}", response_class=HTMLResponse)
 async def delete_batch(batch_id: int, request: Request, db: Session = Depends(get_db)):
     batch = db.query(Batch).filter(Batch.id == batch_id).first()
     if not batch:
         raise HTTPException(status_code=404, detail="Batch not found")
-    
+
     db.delete(batch)
     db.commit()
-    
-    return templates.TemplateResponse('batches.html', {'request': request, 'message': 'Batch deleted successfully'})    
 
+    return RedirectResponse(url="/batches/", status_code=status.HTTP_303_SEE_OTHER)
