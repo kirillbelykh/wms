@@ -1,16 +1,24 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+from typing import Optional
 
-class Item(BaseModel):
-    id: int = Field(..., description="The unique identifier of the item")
-    name: str = Field(..., max_length=100, description="The name of the item")
-    description: str = Field(None, max_length=500, description="A brief description of the item")
+class ItemBase(BaseModel):
+    name: str = Field(..., min_length=1, max_length=100, description="Название товара")
+    description: Optional[str] = Field(None, max_length=255, description="Описание товара")
+
+    # Валидация через field_validator (Pydantic v2)
+    @field_validator("name")
+    @classmethod
+    def strip_name(cls, v: str) -> str:
+        return v.strip()
+
+
+class ItemCreate(ItemBase):
+    """Схема для создания товара"""
+    pass
+
+
+class ItemResponse(ItemBase):
+    id: int
 
     class Config:
-        orm_mode = True
-        schema_extra = {
-            "example": {
-                "id": 1,
-                "name": "Sample Item",
-                "description": "This is a sample item description."
-            }
-        }
+        from_attributes = True  # для работы с ORM

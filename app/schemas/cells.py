@@ -1,16 +1,24 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
-class Cell(BaseModel):
-    id: int = Field(..., description="The unique identifier of the cell")
-    name: str = Field(..., max_length=100, description="The name of the cell")
-    value: str = Field(None, max_length=500, description="The value contained in the cell")
+
+class CellBase(BaseModel):
+    name: str = Field(..., min_length=1, max_length=100, description="Название ячейки")
+    description: str | None = Field(None, max_length=255, description="Описание ячейки")
+    capacity: float = Field(..., ge=0, description="Вместимость (неотрицательное число)")
+
+    # Валидация имени — убираем пробелы
+    @field_validator("name")
+    @classmethod
+    def strip_name(cls, v: str) -> str:
+        return v.strip()
+
+
+class CellCreate(CellBase):
+    pass
+
+
+class CellResponse(CellBase):
+    id: int
 
     class Config:
-        orm_mode = True
-        schema_extra = {
-            "example": {
-                "id": 1,
-                "name": "Sample Cell",
-                "value": "This is a sample cell value."
-            }
-        }
+        from_attributes = True
