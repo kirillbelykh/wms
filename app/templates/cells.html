@@ -1,0 +1,87 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto mt-8">
+  <h1 class="text-3xl font-bold mb-6">Ячейки склада</h1>
+
+  <!-- Форма добавления новой ячейки -->
+  <form id="create-cell-form" class="flex gap-2 mb-6">
+    <input type="text" name="name" placeholder="Название ячейки" required
+           class="border rounded px-3 py-2 flex-1">
+    <input type="text" name="description" placeholder="Описание"
+           class="border rounded px-3 py-2 flex-1">
+    <input type="number" step="0.1" name="capacity" placeholder="Вместимость"
+           class="border rounded px-3 py-2 w-32">
+    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Создать</button>
+  </form>
+
+  <!-- Список ячеек -->
+  <ul id="cells-list" class="space-y-4">
+    {% for cell in cells %}
+    <li data-id="{{ cell.id }}" class="flex justify-between items-center p-4 border rounded hover:shadow">
+      <div>
+        <h2 class="font-semibold text-lg">{{ cell.name or 'Нет названия' }}</h2>
+        <p class="text-gray-500">{{ cell.description or 'Нет описания' }}</p>
+        <p class="text-sm text-gray-400">Вместимость: {{ cell.capacity }}</p>
+      </div>
+      <button onclick="deleteCell({{ cell.id }}, this)" class="text-red-500 hover:text-red-700 ml-4">🗑️</button>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<script>
+const form = document.getElementById('create-cell-form');
+const list = document.getElementById('cells-list');
+
+// Создание ячейки без перезагрузки
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const formData = new FormData(form);
+
+  try {
+    const response = await fetch('/cells/', {
+      method: 'POST',
+      body: formData
+    });
+
+    const cell = await response.json();
+    if (cell.id) {
+      const li = document.createElement('li');
+      li.dataset.id = cell.id;
+      li.className = 'flex justify-between items-center p-4 border rounded hover:shadow';
+      li.innerHTML = `
+        <div>
+          <h2 class="font-semibold text-lg">${cell.name}</h2>
+          <p class="text-gray-500">${cell.description}</p>
+          <p class="text-sm text-gray-400">Вместимость: ${cell.capacity}</p>
+        </div>
+        <button onclick="deleteCell(${cell.id}, this)" class="text-red-500 hover:text-red-700 ml-4">🗑️</button>
+      `;
+      list.appendChild(li);
+      form.reset();
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Ошибка при создании ячейки');
+  }
+});
+
+// Удаление ячейки без перезагрузки
+async function deleteCell(cellId, button) {
+  if (!confirm('Вы точно хотите удалить эту ячейку?')) return;
+
+  try {
+    const response = await fetch(`/cells/delete/${cellId}`, { method: 'DELETE' });
+    if (response.ok) {
+      button.closest('li').remove();
+    } else {
+      alert('Не удалось удалить ячейку');
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Ошибка при удалении ячейки');
+  }
+}
+</script>
+{% endblock %}
