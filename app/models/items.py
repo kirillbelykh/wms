@@ -9,10 +9,12 @@ class Item(Base):
     name = Column(String, index=True)
     description = Column(String, nullable=True)
     quantity = Column(Float, default=0.0)
+    order_id = Column(Integer, ForeignKey("orders.id"))
     
     #relationships
     cells = relationship("Cell", back_populates="items")
     batches = relationship("Batch", back_populates="items")
     receivings = relationship("Receiving", back_populates="items")
+    orders = relationship("Order", back_populates="items")
     
     

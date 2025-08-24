@@ -3,5 +3,6 @@ from app.models.cells import Cell
 from app.models.batches import Batch
 from app.models.orders import Order
 from app.models.receivings import Receiving
+from app.database import Base
 
-__all__ = ['Batch', 'Cell', 'Item', 'Order', 'Receiving']
+__all__ = ['Batch', 'Cell', 'Item', 'Order', 'Receiving', 'Base']

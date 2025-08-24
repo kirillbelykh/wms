@@ -4,6 +4,7 @@ from app.api.items import router as items_router
 from app.api.cells import router as cells_router
 from app.api.batches import router as batches_router
 from app.api.receivings import router as receiving_router
+from app.api.orders import router as orders_router
 
 templates = Jinja2Templates(directory='app/templates')
 
@@ -22,3 +23,4 @@ app.include_router(items_router)
 app.include_router(cells_router)
 app.include_router(batches_router)
 app.include_router(receiving_router)
+app.include_router(orders_router)

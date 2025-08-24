@@ -14,4 +14,5 @@ class Batch(Base):
     cells = relationship("Cell", back_populates="batches")
     item_id = Column(Integer, ForeignKey('items.id'), nullable=False)
     items = relationship("Item", back_populates="batches")
+    orders = relationship("Order", back_populates="batches")
     
