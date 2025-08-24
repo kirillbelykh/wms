@@ -1,0 +1,71 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto mt-8">
+  <h1 class="text-2xl font-bold mb-4">Создать заказ</h1>
+
+  <form method="post" action="{{ url_for('create_order') }}" class="flex flex-wrap gap-2 items-end">
+    <input type="text" name="name" placeholder="Название" required class="border rounded px-2 py-1 flex-1 min-w-[120px]">
+    <select name="type" required class="border rounded px-2 py-1 w-40">
+      <option value="" disabled selected>Тип заказа</option>
+      <option value="receiving">Приемка</option>
+      <option value="shipping">Отгрузка</option>
+      <option value="movement">Перемещение</option>
+    </select>
+    <input type="number" name="quantity" placeholder="Кол-во" min="1" class="border rounded px-2 py-1 w-24">
+    <input type="text" name="description" placeholder="Описание" class="border rounded px-2 py-1 flex-1 min-w-[150px]">
+
+    <!-- Выбор товаров -->
+    <div class="flex gap-1 items-center">
+      <select id="item-select" class="border rounded px-2 py-1 w-48">
+        <option value="" disabled selected>Выберите товар</option>
+        {% for item in items %}
+        <option value="{{ item.id }}">{{ item.name }}</option>
+        {% endfor %}
+      </select>
+      <button type="button" id="add-item-btn" class="bg-green-500 text-white px-2 py-1 rounded">➕</button>
+    </div>
+
+    <input type="hidden" name="item_ids" id="items-input" value="">
+    <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded">Создать</button>
+  </form>
+
+  <!-- Список выбранных товаров -->
+  <ul id="selected-items" class="mb-4 flex flex-wrap gap-2 text-sm"></ul>
+</div>
+
+<script>
+const itemSelect = document.getElementById('item-select');
+const addItemBtn = document.getElementById('add-item-btn');
+const selectedItems = document.getElementById('selected-items');
+const itemsInput = document.getElementById('items-input');
+let itemsList = [];
+
+addItemBtn.addEventListener('click', () => {
+  const itemId = itemSelect.value;
+  const itemName = itemSelect.options[itemSelect.selectedIndex].text;
+  if (!itemId || itemsList.includes(itemId)) return;
+
+  itemsList.push(itemId);
+  itemsInput.value = itemsList.join(',');
+
+  const li = document.createElement('li');
+  li.textContent = itemName;
+  li.dataset.id = itemId;
+  li.className = "bg-gray-100 px-2 py-1 rounded flex items-center gap-1";
+
+  const removeBtn = document.createElement('button');
+  removeBtn.type = "button";
+  removeBtn.textContent = "✖";
+  removeBtn.className = "text-red-500 hover:text-red-700 text-sm";
+  removeBtn.addEventListener('click', () => {
+    itemsList = itemsList.filter(id => id !== itemId);
+    itemsInput.value = itemsList.join(',');
+    li.remove();
+  });
+
+  li.appendChild(removeBtn);
+  selectedItems.appendChild(li);
+});
+</script>
+{% endblock %}

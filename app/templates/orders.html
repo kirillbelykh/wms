@@ -2,36 +2,23 @@
 
 {% block content %}
 <div class="max-w-5xl mx-auto mt-8">
-  <h1 class="text-3xl font-bold mb-6">Заказы склада</h1>
+  <h1 class="text-2xl font-bold mb-4">Заказы склада</h1>
 
-  <!-- Форма добавления нового заказа -->
-  <form id="create-order-form" class="flex flex-wrap gap-2 mb-6">
-    <input type="text" name="name" placeholder="Название заказа" required
-           class="border rounded px-3 py-2 flex-1">
-    <select name="type" required class="border rounded px-3 py-2 w-48">
-      <option value="" disabled selected>Выберите тип заказа</option>
-      <option value="receiving">Приемка</option>
-      <option value="shipping">Отгрузка</option>
-      <option value="movement">Перемещение</option>
-    </select>
-    <input type="number" name="quantity" placeholder="Количество" min="1"
-           class="border rounded px-3 py-2 w-32">
-    <input type="text" name="description" placeholder="Описание"
-           class="border rounded px-3 py-2 flex-1">
-    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Создать</button>
-  </form>
+  <!-- Кнопка создания нового заказа -->
+  <a href="{{ url_for('create_order_page') }}" class="bg-blue-600 text-white px-4 py-2 rounded mb-4 inline-block">Создать заказ</a>
 
   <!-- Список заказов -->
   <ul id="orders-list" class="space-y-4">
     {% for order in orders %}
-    <li data-id="{{ order.id }}" class="flex justify-between items-center p-4 border rounded hover:shadow">
+    <li data-id="{{ order.id }}" class="flex justify-between items-center p-3 border rounded hover:shadow">
       <div>
-        <h2 class="font-semibold text-lg">{{ order.name }}</h2>
+        <h2 class="font-semibold">{{ order.name }}</h2>
         <p class="text-gray-500">{{ order.description or 'Нет описания' }}</p>
-        <p class="text-sm text-gray-400">Тип: {{ order.type }} | Количество: {{ order.quantity }} | Статус: {{ order.status }}</p>
+        <p class="text-xs text-gray-400">Тип: {{ order.type }} | Кол-во: {{ order.quantity }} | Статус: {{ order.status }}</p>
       </div>
       <div class="flex gap-2">
-        <button onclick="deleteOrder({{ order.id }}, this)" class="text-red-500 hover:text-red-700">🗑️</button>
+        <a href="{{ url_for('read_order', order_id=order.id) }}" class="text-blue-500 hover:text-blue-700 text-sm">Открыть</a>
+        <a href="{{ url_for('delete_order', order_id=order.id) }}" class="text-red-500 hover:text-red-700 text-sm">🗑️</a>
       </div>
     </li>
     {% else %}
@@ -39,55 +26,4 @@
     {% endfor %}
   </ul>
 </div>
-
-<script>
-const form = document.getElementById('create-order-form');
-const list = document.getElementById('orders-list');
-
-// Создание заказа без перезагрузки
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const formData = new FormData(form);
-
-  try {
-    const response = await fetch('/orders/create', {
-      method: 'POST',
-      body: formData
-    });
-
-    if (!response.ok) throw new Error('Ошибка создания заказа');
-
-    // Получаем свежий список заказов через GET
-    const ordersResponse = await fetch('/orders/');
-    const html = await ordersResponse.text();
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(html, "text/html");
-    const updatedList = doc.getElementById('orders-list');
-    if (updatedList) {
-      list.innerHTML = updatedList.innerHTML;
-      form.reset();
-    }
-  } catch (err) {
-    console.error(err);
-    alert('Ошибка при создании заказа');
-  }
-});
-
-// Удаление заказа без перезагрузки
-async function deleteOrder(orderId, button) {
-  if (!confirm('Вы точно хотите удалить этот заказ?')) return;
-
-  try {
-    const response = await fetch(`/orders/delete/${orderId}`, { method: 'GET' });
-    if (response.ok) {
-      button.closest('li').remove();
-    } else {
-      alert('Не удалось удалить заказ');
-    }
-  } catch (err) {
-    console.error(err);
-    alert('Ошибка при удалении заказа');
-  }
-}
-</script>
 {% endblock %}
