@@ -1,0 +1,55 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto mt-8">
+  <h1 class="text-2xl font-bold mb-4">Заказ: {{ order.name }}</h1>
+
+  <!-- Информация о заказе -->
+  <div class="border rounded-lg p-4 shadow-md bg-white mb-6">
+    <div class="flex justify-between items-center mb-2">
+      <span class="font-semibold text-gray-700">Тип заказа:</span>
+      <span class="text-gray-900">{{ order.type }}</span>
+    </div>
+    <div class="flex justify-between items-center mb-2">
+      <span class="font-semibold text-gray-700">Количество:</span>
+      <span class="text-gray-900">{{ order.quantity }}</span>
+    </div>
+    <div class="flex justify-between items-center mb-2">
+      <span class="font-semibold text-gray-700">Статус:</span>
+      <span class="text-gray-900">{{ order.status }}</span>
+    </div>
+    <div class="flex justify-between items-center mb-2">
+      <span class="font-semibold text-gray-700">Создано:</span>
+      <span class="text-gray-900">{{ order.created_at.strftime("%d.%m.%Y %H:%M") }}</span>
+    </div>
+    {% if order.description %}
+    <div class="mt-2">
+      <span class="font-semibold text-gray-700">Описание:</span>
+      <p class="text-gray-900">{{ order.description }}</p>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Список товаров заказа -->
+  <div class="border rounded-lg p-4 shadow-md bg-white">
+    <h2 class="text-xl font-semibold mb-3">Товары в заказе</h2>
+    {% if order.items %}
+    <ul class="divide-y divide-gray-200">
+      {% for item in order.items %}
+      <li class="py-2 flex justify-between items-center">
+        <span class="text-gray-800">{{ item.name }}</span>
+        <span class="text-gray-500">Кол-во: {{ item.quantity }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    {% else %}
+      <p class="text-gray-400">Товары отсутствуют</p>
+    {% endif %}
+  </div>
+
+  <!-- Кнопка возврата -->
+  <div class="mt-6">
+    <a href="{{ url_for('read_orders') }}" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">Назад к списку заказов</a>
+  </div>
+</div>
+{% endblock %}

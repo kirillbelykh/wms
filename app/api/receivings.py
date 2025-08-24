@@ -16,7 +16,11 @@ async def read_receivings(request: Request, db: Session = Depends(get_db)):
     Retrieve a list of receivings and render them in an HTML template.
     """
     receivings = db.query(Receiving).all()
-    return templates.TemplateResponse('receivings.html', {'request': request, 'receivings': receivings})
+    items = db.query(Item).all()
+    orders = db.query(Order).all()
+    return templates.TemplateResponse('receivings.html', 
+                                      {'request': request, 'receivings': receivings, 
+                                       'items': items, 'orders': orders})
 
 @router.post('/create', response_class=JSONResponse)
 async def create_receiving(
@@ -30,7 +34,6 @@ async def create_receiving(
         created_at=datetime.now(),
         order_id=receiving.order_id,
         item_id=receiving.item_id,
-        barcode=receiving.barcode,
         country=receiving.country,
         type=receiving.type_,
         unit_of_measure=receiving.unit_of_measure,

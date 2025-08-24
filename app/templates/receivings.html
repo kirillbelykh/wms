@@ -10,8 +10,6 @@
            class="border rounded px-3 py-2 w-full">
     <input type="number" name="quantity" placeholder="Количество" step="1" required
            class="border rounded px-3 py-2 w-full">
-    <input type="text" name="barcode" placeholder="Штрихкод" required
-           class="border rounded px-3 py-2 w-full">
     <input type="text" name="country" placeholder="Страна производства"
            class="border rounded px-3 py-2 w-full">
     <input type="text" name="type" placeholder="Тип товара"
@@ -41,7 +39,7 @@
     <li data-id="{{ rec.id }}" class="flex justify-between items-center p-4 border rounded hover:shadow">
       <div>
         <h2 class="font-semibold text-lg">{{ rec.name }}</h2>
-        <p class="text-gray-500">ШК: {{ rec.barcode }} | Кол-во: {{ rec.quantity }} | Статус: {{ rec.status }}</p>
+        <p class="text-gray-500"Кол-во: {{ rec.quantity }} | Статус: {{ rec.status }}</p>
         <p class="text-sm text-gray-400">{{ rec.country }} | {{ rec.type }} | {{ rec.unit_of_measure }}</p>
         {% if rec.comments %}<p class="text-sm text-gray-500 italic">Комментарий: {{ rec.comments }}</p>{% endif %}
       </div>
@@ -75,7 +73,7 @@ form.addEventListener('submit', async (e) => {
       li.innerHTML = `
         <div>
           <h2 class="font-semibold text-lg">${receiving.name}</h2>
-          <p class="text-gray-500">ШК: ${receiving.barcode} | Кол-во: ${receiving.quantity} | Статус: ${receiving.status}</p>
+          <p class="text-gray-500">Кол-во: ${receiving.quantity} | Статус: ${receiving.status}</p>
           <p class="text-sm text-gray-400">${receiving.country || ""} | ${receiving.type || ""} | ${receiving.unit_of_measure || ""}</p>
           ${receiving.comments ? `<p class="text-sm text-gray-500 italic">Комментарий: ${receiving.comments}</p>` : ""}
         </div>

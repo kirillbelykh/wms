@@ -13,7 +13,6 @@ class Receiving(Base):
     end_at = Column(DateTime, nullable=True)
     order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
     orders = relationship("Order", back_populates="receivings")
-    barcode = Column(String, unique=True, index=True, nullable=False)
     country = Column(String, nullable=True)
     type = Column(String, nullable=True)
     unit_of_measure = Column(String, nullable=True)
