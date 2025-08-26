@@ -2,19 +2,28 @@ from app.database import Base
 from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from sqlalchemy.orm import relationship
 
+
 class Item(Base):
-    __tablename__ = 'items'
+    __tablename__ = "items"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
+    name = Column(String, index=True, nullable=False)
     description = Column(String, nullable=True)
     quantity = Column(Float, default=0.0)
-    order_id = Column(Integer, ForeignKey("orders.id"))
-    
-    #relationships
-    cells = relationship("Cell", back_populates="items")
-    batches = relationship("Batch", back_populates="items")
-    receivings = relationship("Receiving", back_populates="items")
-    orders = relationship("Order", back_populates="items")
-    
-    
+    type = Column(String, index=True, nullable=True)
+    size = Column(String, index=True, nullable=True)
+
+    order_id = Column(Integer, ForeignKey("orders.id"), nullable=True)
+    cell_id = Column(Integer, ForeignKey("cells.id"), nullable=True)
+    manufacturer_id = Column(Integer, ForeignKey("manufacturers.id"), nullable=True)
+    material_id = Column(Integer, ForeignKey("materials.id"), nullable=True)
+    unit_id = Column(Integer, ForeignKey("units.id"), nullable=True)
+
+    order = relationship("Order", back_populates="items")
+    cell = relationship("Cell", back_populates="items")
+    batches = relationship("Batch", back_populates="item")
+    receivings = relationship("Receiving", back_populates="item")
+    manufacturer = relationship("Manufacturer", back_populates="items")
+    material = relationship("Material", back_populates="items")
+    unit = relationship("Unit", back_populates="items")
+    barcode = relationship("Barcode", back_populates="item", uselist=False)

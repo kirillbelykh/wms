@@ -1,18 +1,16 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Float
+from sqlalchemy import Column, Integer, String, Float
 from sqlalchemy.orm import relationship
 from app.database import Base
 
+
 class Cell(Base):
-    __tablename__ = 'cells'
+    __tablename__ = "cells"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
+    name = Column(String, index=True, nullable=False)
     description = Column(String, nullable=True)
     capacity = Column(Float, default=0.0)
 
-    # relationships
-    item_id = Column(Integer, ForeignKey('items.id'))
-    items = relationship("Item", back_populates="cells")
-    batches = relationship("Batch", back_populates="cells")
-    
-    
+    items = relationship("Item", back_populates="cell")
+    batches = relationship("Batch", back_populates="cell")
+    barcode = relationship("Barcode", back_populates="cell", uselist=False)
