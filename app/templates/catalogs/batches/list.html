@@ -1,0 +1,22 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="max-w-5xl mx-auto">
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">Партии</h1>
+    <a href="/catalogs/batches/create" class="px-4 py-2 rounded bg-blue-600 text-white">Добавить</a>
+  </div>
+
+  <form method="get" class="mb-4">
+    <input name="q" value="{{ q or '' }}" class="border rounded p-2" placeholder="Поиск">
+    <button class="px-3 py-2 rounded bg-gray-200">Искать</button>
+  </form>
+
+  <ul class="space-y-2">
+    {% for b in rows %}
+      <li class="p-3 rounded border hover:shadow"><a href="/catalogs/batches/{{ b.id }}/">{{ b.name }}</a> · Кол-во: {{ b.quantity }}</li>
+    {% else %}
+      <li class="text-gray-400">Пусто</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

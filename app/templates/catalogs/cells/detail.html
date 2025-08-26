@@ -1,0 +1,31 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="max-w-md mx-auto">
+  <div class="flex justify-between mb-3">
+    <h1 class="text-xl font-bold">Ячейка: {{ row.name }}</h1>
+    <a class="text-red-600" href="/catalogs/cells/{{ row.id }}/delete" onclick="return confirm('Удалить?')">Удалить</a>
+  </div>
+
+  <form method="post" action="/catalogs/cells/{{ row.id }}/update" class="grid gap-3">
+    <input name="name" class="border rounded p-2" value="{{ row.name }}" required>
+    <input name="capacity" type="number" step="0.01" class="border rounded p-2" value="{{ row.capacity or 0 }}">
+
+    <div class="flex gap-2">
+      <button class="px-4 py-2 rounded bg-green-600 text-white">Сохранить</button>
+      <a href="/catalogs/cells/" class="px-4 py-2 rounded bg-gray-300">Сохранить и закрыть</a>
+    </div>
+  </form>
+
+  <hr class="my-4">
+  <h2 class="font-semibold mb-2">Штрихкод</h2>
+  {% if barcode %}
+    <div class="p-2 border rounded">{{ barcode.code }}</div>
+  {% else %}
+    <form method="post" action="/catalogs/barcodes/generate-and-attach" class="flex gap-2">
+      <input type="hidden" name="cell_id" value="{{ row.id }}">
+      <input name="quantity" type="number" value="1" class="border rounded p-2" placeholder="Кол-во">
+      <button class="px-3 py-2 rounded bg-blue-600 text-white">Сгенерировать ШК</button>
+    </form>
+  {% endif %}
+</div>
+{% endblock %}

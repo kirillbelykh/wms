@@ -1,0 +1,16 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="max-w-4xl mx-auto">
+  <div class="flex justify-between mb-4">
+    <h1 class="text-2xl font-bold">Материалы</h1>
+    <a class="px-4 py-2 rounded bg-blue-600 text-white" href="/catalogs/materials/create">Добавить</a>
+  </div>
+  <ul class="space-y-2">
+    {% for m in rows %}
+      <li class="p-3 rounded border hover:shadow"><a href="/catalogs/materials/{{ m.id }}/">{{ m.name }}</a></li>
+    {% else %}
+      <li class="text-gray-400">Пусто</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

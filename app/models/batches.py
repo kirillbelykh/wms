@@ -7,12 +7,12 @@ class Batch(Base):
     __tablename__ = "batches"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
+    name = Column(Integer, nullable=False, unique=True)
     description = Column(String, nullable=True)
-    quantity = Column(Float, nullable=False)
+    quantity = Column(Float, nullable=True)
 
-    cell_id = Column(Integer, ForeignKey("cells.id"), nullable=False)
-    item_id = Column(Integer, ForeignKey("items.id"), nullable=False)
+    cell_id = Column(Integer, ForeignKey("cells.id"), nullable=True)
+    item_id = Column(Integer, ForeignKey("items.id"), nullable=True)
     order_id = Column(Integer, ForeignKey("orders.id"), nullable=True)
 
     cell = relationship("Cell", back_populates="batches")

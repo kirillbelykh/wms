@@ -8,6 +8,7 @@ class Barcode(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     code = Column(String, unique=True, nullable=False)
+    quantity = Column(Integer, nullable=False)
 
     # связи
     item_id = Column(Integer, ForeignKey("items.id"), nullable=True)

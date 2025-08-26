@@ -1,0 +1,67 @@
+{% macro form_fields(obj=None, types=[], sizes=[], cells=[], manufacturers=[], materials=[], units=[]) %}
+<form method="post" class="grid gap-3">
+    <input name="name" class="border rounded p-2" placeholder="Название" required
+           value="{{ obj.name if obj else '' }}">
+    <input name="description" class="border rounded p-2" placeholder="Описание"
+           value="{{ obj.description if obj else '' }}">
+
+    <select name="type_name" class="border rounded p-2">
+      <option disabled selected>Тип (из БД)</option>
+      {% for t in types %}
+        <option value="{{ t.name }}" {% if obj and obj.type == t.name %}selected{% endif %}>
+            {{ t.name }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <select name="size_name" class="border rounded p-2">
+      <option disabled selected>Размер (из БД)</option>
+      {% for s in sizes %}
+        <option value="{{ s.name }}" {% if obj and obj.size == s.name %}selected{% endif %}>
+            {{ s.name }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <select name="cell_id" class="border rounded p-2">
+      <option value="">Ячейка</option>
+      {% for c in cells %}
+        <option value="{{ c.id }}" {% if obj and obj.cell_id == c.id %}selected{% endif %}>
+            {{ c.name }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <select name="manufacturer_id" class="border rounded p-2">
+      <option value="">Производитель</option>
+      {% for m in manufacturers %}
+        <option value="{{ m.id }}" {% if obj and obj.manufacturer_id == m.id %}selected{% endif %}>
+            {{ m.name }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <select name="material_id" class="border rounded p-2">
+      <option value="">Материал</option>
+      {% for m in materials %}
+        <option value="{{ m.id }}" {% if obj and obj.material_id == m.id %}selected{% endif %}>
+            {{ m.name }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <select name="unit_id" class="border rounded p-2">
+      <option value="">Единица измерения</option>
+      {% for u in units %}
+        <option value="{{ u.id }}" {% if obj and obj.unit_id == u.id %}selected{% endif %}>
+            {{ u.name }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <div class="flex gap-2">
+      <button class="px-4 py-2 rounded bg-green-600 text-white" type="submit">Сохранить</button>
+      <a href="/catalogs/items/" class="px-4 py-2 rounded bg-gray-300">Сохранить и закрыть</a>
+    </div>
+</form>
+{% endmacro %}

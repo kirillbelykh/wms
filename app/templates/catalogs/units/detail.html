@@ -1,0 +1,19 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="max-w-md mx-auto">
+  <div class="flex justify-between mb-3">
+    <h1 class="text-xl font-bold">Единица измерения: {{ row.name }}</h1>
+    <a class="text-red-600" href="/catalogs/units/{{ row.id }}/delete" onclick="return confirm('Удалить?')">Удалить</a>
+  </div>
+
+  <form method="post" action="/catalogs/units/{{ row.id }}/update" class="grid gap-3">
+    <input name="name" class="border rounded p-2" value="{{ row.name }}" required>
+    <textarea name="description" class="border rounded p-2">{{ row.description or '' }}</textarea>
+
+    <div class="flex gap-2">
+      <button class="px-4 py-2 rounded bg-green-600 text-white">Сохранить</button>
+      <a href="/catalogs/units/" class="px-4 py-2 rounded bg-gray-300">Сохранить и закрыть</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

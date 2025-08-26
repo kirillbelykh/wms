@@ -1,0 +1,9 @@
+{% extends "index.html" %}
+{% from "catalogs/items/form.html" import form_fields %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+  <h1 class="text-xl font-bold mb-4">Добавить товар</h1>
+  {{ form_fields(types=types, sizes=sizes, cells=cells, manufacturers=manufacturers, materials=materials, units=units) }}
+</div>
+{% endblock %}

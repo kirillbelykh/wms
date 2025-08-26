@@ -1,0 +1,20 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="max-w-5xl mx-auto">
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">Ячейки</h1>
+    <a href="/catalogs/cells/create" class="px-4 py-2 rounded bg-blue-600 text-white">Добавить</a>
+  </div>
+
+  <ul class="space-y-2">
+    {% for c in rows %}
+      <li class="p-3 rounded border hover:shadow">
+        <a href="/catalogs/cells/{{ c.id }}/">{{ c.name }}</a>
+        <div class="text-sm text-gray-500">Нагрузка: {{ c.capacity }}</div>
+      </li>
+    {% else %}
+      <li class="text-gray-400">Пока пусто</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
