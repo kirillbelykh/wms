@@ -17,6 +17,7 @@ class Item(Base):
     unit_id = Column(Integer, ForeignKey("units.id"), nullable=True)
     size_id = Column(Integer, ForeignKey("sizes.id"), nullable=True)
     item_type_id = Column(Integer, ForeignKey("item_types.id"), nullable=True)
+    batch_id = Column(Integer, ForeignKey("batches.id"), nullable=True)
 
     order = relationship("Order", back_populates="items")
     cell = relationship("Cell", back_populates="items")

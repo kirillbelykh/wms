@@ -1,0 +1,73 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="max-w-5xl mx-auto">
+  <h1 class="text-2xl font-bold mb-4">Штрихкоды ячеек</h1>
+
+  <!-- Форма генерации ШК для ячейки -->
+  <form method="post" action="{{ url_for('generate_cell_barcodes') }}" class="flex gap-2 mb-6 items-center">
+    <select name="cell_id" class="border rounded p-2" required>
+      <option value="" disabled selected>Выберите ячейку</option>
+      {% for cell in cells %}
+        <option value="{{ cell.id }}">{{ cell.name }}</option>
+      {% endfor %}
+    </select>
+    <input type="number" name="quantity" value="1" min="1" class="border rounded p-2 w-24">
+    <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Генерировать</button>
+  </form>
+
+  <!-- Таблица -->
+  <table class="min-w-full border-collapse border border-gray-300 text-left">
+    <thead>
+      <tr class="bg-gray-200">
+        <th class="border px-6 py-2">ID</th>
+        <th class="border px-6 py-2">Ячейка</th>
+        <th class="border px-6 py-2">Штрихкод</th>
+        <th class="border px-6 py-2">Действия</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in rows %}
+      <tr class="hover:bg-gray-50">
+        <td class="border px-6 py-2">{{ row.id }}</td>
+        <td class="border px-6 py-2">{{ row.cell.name if row.cell else '-' }}</td>
+        <td class="border px-6 py-2">
+          <a href="#" class="barcode-link text-blue-600 underline" data-barcode-url="{{ url_for('barcode_image', barcode_id=row.id) }}">
+            {{ row.code }}
+          </a>
+        </td>
+        <td class="border px-6 py-2">
+          <a href="{{ url_for('barcodes_delete', barcode_id=row.id) }}" class="text-red-600 hover:underline">Удалить</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- Модальное окно для просмотра ШК -->
+<div id="barcode-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+  <div class="bg-white p-4 rounded relative max-w-3xl w-full">
+    <button id="barcode-close" class="absolute top-2 right-2 text-gray-600 font-bold text-xl hover:text-red-600">×</button>
+    <img id="barcode-img" src="" alt="Barcode" class="w-full h-auto object-contain">
+  </div>
+</div>
+
+<script>
+document.querySelectorAll(".barcode-link").forEach(link => {
+    link.addEventListener("click", function(e) {
+        e.preventDefault();
+        const modal = document.getElementById("barcode-modal");
+        const img = document.getElementById("barcode-img");
+        img.src = this.dataset.barcodeUrl;
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+    });
+});
+
+document.getElementById("barcode-close").addEventListener("click", function() {
+    const modal = document.getElementById("barcode-modal");
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+});
+</script>
+{% endblock %}

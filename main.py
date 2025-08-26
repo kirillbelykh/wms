@@ -18,3 +18,6 @@ async def root():
 
 for router in all_routers:
     app.include_router(router)
+    
+for r in app.routes:
+    print(r.name, r.path)

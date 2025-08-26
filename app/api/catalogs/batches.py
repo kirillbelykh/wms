@@ -25,12 +25,11 @@ async def create_page(request: Request, db: Session = Depends(get_db)):
 @router.post("/create")
 async def create(
     name: int = Form(...),
-    item_id: int = Form(None),
     quantity: float = Form(0.0),
     description: str = Form(""),
     db: Session = Depends(get_db),
 ):
-    row = Batch(name=name, item_id=item_id, quantity=quantity, description=description, cell_id=None)
+    row = Batch(name=name, quantity=quantity, description=description, cell_id=None)
     db.add(row)
     db.commit()
     return RedirectResponse("/catalogs/batches/", status_code=status.HTTP_303_SEE_OTHER)

@@ -41,6 +41,7 @@ async def items_create(
     request: Request,
     name: str = Form(...),
     description: str = Form(""),
+    batch_id: str = Form(""),
     type_id: int = Form(None),
     size_id: int = Form(None),
     cell_id: int = Form(None),
@@ -58,6 +59,7 @@ async def items_create(
     manufacturer_id=manufacturer_id,
     material_id=material_id,
     unit_id=unit_id,
+    batch_id=batch_id
     )
     db.add(item)
     db.commit()

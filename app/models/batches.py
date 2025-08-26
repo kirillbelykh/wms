@@ -12,7 +12,6 @@ class Batch(Base):
     quantity = Column(Float, nullable=True)
 
     cell_id = Column(Integer, ForeignKey("cells.id"), nullable=True)
-    item_id = Column(Integer, ForeignKey("items.id"), nullable=True)
     order_id = Column(Integer, ForeignKey("orders.id"), nullable=True)
 
     cell = relationship("Cell", back_populates="batches")
