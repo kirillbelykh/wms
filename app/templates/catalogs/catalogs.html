@@ -1,18 +1,34 @@
 {% extends "index.html" %}
 {% block content %}
-<div class="max-w-5xl mx-auto">
+<div class="max-w-6xl mx-auto py-6">
   <h1 class="text-2xl font-bold mb-6">Справочники</h1>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <a class="p-4 rounded border hover:shadow" href="/catalogs/items/">Номенклатура</a>
-    <a class="p-4 rounded border hover:shadow" href="/catalogs/item-types/">Типы товаров</a>
-    <a class="p-4 rounded border hover:shadow" href="/catalogs/sizes/">Размеры</a>
-    <a class="p-4 rounded border hover:shadow" href="/catalogs/cells/">Ячейки</a>
-    <a class="p-4 rounded border hover:shadow" href="/catalogs/manufacturers/">Производители</a>
-    <a class="p-4 rounded border hover:shadow" href="/catalogs/materials/">Материалы</a>
-    <a class="p-4 rounded border hover:shadow" href="/catalogs/units/">Единицы измерения</a>
-    <a class="p-4 rounded border hover:shadow" href="/catalogs/batches/">Партии</a>
-    <a class="p-4 rounded border hover:shadow" href="/catalogs/barcodes/">Штрихкоды</a>
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+    {% set sections = [
+      {'name':'Номенклатура','href':'/catalogs/items/'},
+      {'name':'Типы товаров','href':'/catalogs/item-types/'},
+      {'name':'Размеры','href':'/catalogs/sizes/'},
+      {'name':'Ячейки','href':'/catalogs/cells/'},
+      {'name':'Производители','href':'/catalogs/manufacturers/'},
+      {'name':'Материалы','href':'/catalogs/materials/'},
+      {'name':'Единицы измерения','href':'/catalogs/units/'},
+      {'name':'Партии','href':'/catalogs/batches/'},
+      {'name':'Штрихкоды','href':'/catalogs/barcodes/'}
+    ] %}
+
+    {% for section in sections %}
+    <a href="{{ section.href }}"
+       class="block relative p-4 bg-white rounded-lg shadow-sm 
+              transition-transform duration-200 ease-out 
+              transform hover:scale-105 active:scale-95
+              hover:shadow-lg hover:bg-blue-50">
+      <div class="flex items-center justify-center h-16">
+        <span class="text-sm font-semibold text-gray-800 hover:text-blue-600 transition-colors text-center">
+          {{ section.name }}
+        </span>
+      </div>
+    </a>
+    {% endfor %}
   </div>
 </div>
 {% endblock %}

@@ -1,0 +1,183 @@
+<!-- app/templates/scan/scanner.html -->
+{% extends "index.html" %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <h3 class="text-xl font-bold mb-6">Проверка остатков</h3>
+    
+    <!-- Кнопка сканирования -->
+    <div class="text-center mb-8">
+        <button id="scan-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-2xl text-lg shadow-md transition duration-200">
+            Сканируйте штрихкод
+        </button>
+    </div>
+    
+    <!-- Результаты сканирования -->
+    <div id="product-data" class="bg-white rounded-2xl shadow p-6 mb-6" style="display: none;">
+        <h4 class="text-lg font-semibold mb-4 text-green-600">✅ Товар найден</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <p class="text-sm text-gray-600">Штрихкод</p>
+                <p class="font-medium" id="barcode">-</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Наименование</p>
+                <p class="font-medium" id="name">-</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Размер</p>
+                <p class="font-medium" id="size">-</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Ячейка</p>
+                <p class="font-medium" id="cell">-</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Количество</p>
+                <p class="font-medium" id="quantity">-</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Партия</p>
+                <p class="font-medium" id="batch">-</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Сообщения об ошибках -->
+    <div id="error-message" class="bg-red-50 border border-red-200 rounded-2xl p-4 mb-6" style="display: none;">
+        <div class="flex items-center">
+            <span class="text-red-600 mr-2">❌</span>
+            <span class="text-red-800 font-medium" id="error-text"></span>
+        </div>
+    </div>
+    
+    <!-- Индикатор загрузки -->
+    <div id="loading" class="text-center py-8" style="display: none;">
+        <div class="inline-flex items-center">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-gray-600">Обработка штрихкода...</span>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+// Для режима Клавиатура (HID) - основной вариант для ТСД
+let barcodeBuffer = '';
+let lastKeyTime = 0;
+let isScanning = false;
+
+$('#scan-btn').click(function() {
+    startScanning();
+});
+
+function startScanning() {
+    isScanning = true;
+    barcodeBuffer = '';
+    $('#error-message').hide();
+    $('#product-data').hide();
+    $('#loading').hide();
+    
+    // Уведомление пользователя
+    alert('Готов к сканированию... Наведите сканер на штрихкод');
+}
+
+// Обработка клавиатурного ввода (для ТСД в режиме HID)
+$(document).on('keypress', function(e) {
+    if (!isScanning) return;
+    
+    const currentTime = new Date().getTime();
+    
+    // Сброс буфера если между нажатиями больше 50мс
+    if (currentTime - lastKeyTime > 50) {
+        barcodeBuffer = '';
+    }
+    
+    lastKeyTime = currentTime;
+    
+    // Enter означает конец сканирования (ТСД обычно добавляет Enter)
+    if (e.which === 13) {
+        e.preventDefault();
+        if (barcodeBuffer.length > 3) { // Минимальная длина штрихкода
+            processBarcode(barcodeBuffer);
+        } else {
+            $('#error-message').show().find('#error-text').text('Неверный штрихкод');
+        }
+        barcodeBuffer = '';
+        isScanning = false;
+        return;
+    }
+    
+    // Добавляем символ в буфер
+    barcodeBuffer += String.fromCharCode(e.which);
+});
+
+// Для режима Intent (альтернативный вариант)
+function handleScanResult(barcode) {
+    if (barcode && barcode.length > 3) {
+        processBarcode(barcode);
+    }
+}
+
+// Добавляем обработчик для Intent
+document.addEventListener('scannerResult', function(event) {
+    handleScanResult(event.detail || event);
+});
+
+async function processBarcode(barcode) {
+    if (!barcode.trim()) return;
+    
+    $('#loading').show();
+    $('#product-data').hide();
+    $('#error-message').hide();
+    
+    try {
+        const response = await fetch('/scan/check-barcode', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ barcode: barcode.trim() })
+        });
+        
+        const data = await response.json();
+        
+        if (data.error) {
+            $('#error-message').show().find('#error-text').text(data.error);
+        } else {
+            $('#barcode').text(data.barcode || '-');
+            $('#name').text(data.name || '-');
+            $('#size').text(data.size || '-');
+            $('#cell').text(data.cell || '-');
+            $('#quantity').text(data.quantity || '0');
+            $('#batch').text(data.batch || '-');
+            $('#product-data').show();
+        }
+        
+    } catch (error) {
+        $('#error-message').show().find('#error-text').text('Ошибка соединения с сервером');
+        console.error('Ошибка:', error);
+    } finally {
+        $('#loading').hide();
+        isScanning = false;
+    }
+}
+
+// Автофокус на кнопке при загрузке страницы
+$(document).ready(function() {
+    $('#scan-btn').focus();
+    
+    // Обработка клавиш для ручного ввода (если нужно)
+    $(document).on('keydown', function(e) {
+        // F2 или другая клавиша для начала сканирования
+        if (e.keyCode === 113) { // F2
+            startScanning();
+            e.preventDefault();
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -10,15 +10,16 @@
 <body class="bg-gray-50 text-gray-900 flex h-screen">
 
   <!-- Боковое меню -->
-  <aside class="w-64 bg-white shadow-lg hidden md:flex flex-col">
+  <aside id="sidebar" class="w-64 bg-white shadow-lg fixed md:relative z-50 h-full flex flex-col transition-transform duration-200 ease-in-out transform -translate-x-full md:translate-x-0">
     <div class="h-16 flex items-center justify-center border-b">
       <h1 class="text-xl font-bold text-blue-600">WMS</h1>
     </div>
-    <nav class="flex-1 px-4 py-6 space-y-2">
+    <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
       <a href="/" class="block px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 font-medium">Главная</a>
-      <a href="/catalogs/" class="block px-2 py-1 rounded hover:bg-gray-200">Справочники</a>
-      <a href="/cells" class="block px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 font-medium">Ячейки</a>
-      <a href="/batches" class="block px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 font-medium">Партии</a>
+      <a href="/catalogs/" class="block px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 font-medium">Справочники</a>
+      <a href="/scan/" class="block px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 font-medium">Проверка остатков</a>
+      <a href="/catalogs/cells" class="block px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 font-medium">Ячейки</a>
+      <a href="/catalogs/batches" class="block px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 font-medium">Партии</a>
       <a href="/receivings" class="block px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 font-medium">Приемки</a>
       <a href="/orders" class="block px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 font-medium">Заказы</a>
     </nav>
@@ -28,11 +29,11 @@
   </aside>
 
   <!-- Основная часть -->
-  <div class="flex-1 flex flex-col">
-    
+<div class="flex-1 flex flex-col transition-all duration-200 ease-in-out">
+
     <!-- Верхняя панель -->
     <header class="h-16 bg-white border-b flex items-center justify-between px-6 shadow-sm">
-      <button class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+      <button id="menu-toggle" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
         <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
         </svg>
@@ -75,5 +76,15 @@
       {% endblock %}
     </main>
   </div>
+
+  <!-- Скрипт для мобильного меню -->
+  <script>
+    const menuBtn = document.getElementById("menu-toggle");
+    const sidebar = document.getElementById("sidebar");
+
+    menuBtn.addEventListener("click", () => {
+      sidebar.classList.toggle("-translate-x-full");
+    });
+  </script>
 </body>
 </html>

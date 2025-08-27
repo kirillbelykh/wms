@@ -14,6 +14,8 @@ from app.api.catalogs.materials import router as materials_router
 from app.api.catalogs.units import router as units_router
 from app.api.catalogs.batches import router as batches_router
 from app.api.catalogs.barcodes import router as barcodes_router
+from app.api.scanner.scan import router as scanner_router
+
 
 # Создаём список всех роутеров
 all_routers = [
@@ -29,4 +31,5 @@ all_routers = [
     units_router,
     batches_router,
     barcodes_router,
+    scanner_router
 ]

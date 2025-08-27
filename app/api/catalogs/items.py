@@ -23,7 +23,7 @@ async def items_list(request: Request, db: Session = Depends(get_db)):
 async def items_create_page(request: Request, db: Session = Depends(get_db)):
     ctx = {
         "request": request,
-        "types": db.query(ItemType).all(),
+        "item_types": db.query(ItemType).all(),  # Изменено: types -> item_types
         "sizes": db.query(Size).all(),
         "cells": db.query(Cell).all(),
         "manufacturers": db.query(Manufacturer).all(),
@@ -41,7 +41,7 @@ async def items_create(
     request: Request,
     name: str = Form(...),
     description: str = Form(""),
-    batch_id: str = Form(""),
+    batch_id: int = Form(None),
     type_id: int = Form(None),
     size_id: int = Form(None),
     cell_id: int = Form(None),
@@ -50,16 +50,25 @@ async def items_create(
     unit_id: int = Form(None),
     db: Session = Depends(get_db),
 ):
+    # Проверка на пустые значения
+    batch_id = batch_id if batch_id else None
+    type_id = type_id if type_id else None
+    size_id = size_id if size_id else None
+    cell_id = cell_id if cell_id else None
+    manufacturer_id = manufacturer_id if manufacturer_id else None
+    material_id = material_id if material_id else None
+    unit_id = unit_id if unit_id else None
+
     item = Item(
-    name=name,
-    description=description,
-    item_type_id=type_id,   # правильно
-    size_id=size_id,             # правильно
-    cell_id=cell_id,
-    manufacturer_id=manufacturer_id,
-    material_id=material_id,
-    unit_id=unit_id,
-    batch_id=batch_id
+        name=name,
+        description=description,
+        item_type_id=type_id,
+        size_id=size_id,
+        cell_id=cell_id,
+        manufacturer_id=manufacturer_id,
+        material_id=material_id,
+        unit_id=unit_id,
+        batch_id=batch_id
     )
     db.add(item)
     db.commit()
@@ -77,7 +86,7 @@ async def items_detail(item_id: int, request: Request, db: Session = Depends(get
     ctx = {
         "request": request,
         "item": item,
-        "types": db.query(ItemType).all(),
+        "item_types": db.query(ItemType).all(),  # Изменено: types -> item_types
         "sizes": db.query(Size).all(),
         "cells": db.query(Cell).all(),
         "manufacturers": db.query(Manufacturer).all(),
@@ -97,8 +106,9 @@ async def items_update(
     request: Request,
     name: str = Form(...),
     description: str = Form(""),
-    type_id: str = Form(None),
-    size_id: str = Form(None),
+    batch_id: int = Form(None),  # Исправлено: добавлен batch_id
+    type_id: int = Form(None),   # Исправлено: int вместо str
+    size_id: int = Form(None),   # Исправлено: int вместо str
     cell_id: int = Form(None),
     manufacturer_id: int = Form(None),
     material_id: int = Form(None),
@@ -108,14 +118,26 @@ async def items_update(
     item = db.query(Item).filter(Item.id == item_id).first()
     if not item:
         raise HTTPException(404, "Item not found")
+    
+    # Проверка на пустые значения
+    batch_id = batch_id if batch_id else None
+    type_id = type_id if type_id else None
+    size_id = size_id if size_id else None
+    cell_id = cell_id if cell_id else None
+    manufacturer_id = manufacturer_id if manufacturer_id else None
+    material_id = material_id if material_id else None
+    unit_id = unit_id if unit_id else None
+
     item.name = name
     item.description = description
-    item.cell_id = cell_id
-    item.size_id = size_id
+    item.batch_id = batch_id
     item.item_type_id = type_id
+    item.size_id = size_id
+    item.cell_id = cell_id
     item.manufacturer_id = manufacturer_id
     item.material_id = material_id
     item.unit_id = unit_id
+    
     db.commit()
     db.refresh(item)
     return RedirectResponse(url=f"/catalogs/items/{item_id}/", status_code=status.HTTP_303_SEE_OTHER)

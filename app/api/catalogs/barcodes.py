@@ -100,7 +100,7 @@ async def barcode_image(barcode_id: int, db: Session = Depends(get_db)):
     # Растяжение по горизонтали
     writer_options = {
         "module_width": 0.9,
-        "module_height": 50,
+        "module_height": 20,
         "quiet_zone": 6.5,
         "font_size": 12,
         "text_distance": 7,
