@@ -5,17 +5,25 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from app.database.create_db import get_db
 from app.models import Batch, Item
+from sqlalchemy import cast, String, or_
 
 router = APIRouter(prefix="/catalogs/batches", tags=["catalogs:batches"])
 templates = Jinja2Templates(directory="app/templates")
 
 @router.get("/", response_class=HTMLResponse)
-async def list_page(request: Request, q: str = "", db: Session = Depends(get_db)):
-    qry = db.query(Batch)
+def list_page(request: Request, q: str = "", db: Session = Depends(get_db)):
+    query = db.query(Batch)
+
     if q:
-        # name — ЧИСЛО в модели, но ищем по строке приводя
-        qry = qry.filter(Batch.name.cast(String).like(f"%{q}%"))
-    rows = qry.order_by(Batch.id.desc()).all()
+        query = query.filter(
+            or_(
+                cast(Batch.name, String).ilike(f"%{q}%"),   # <-- исправлено
+                Batch.description.ilike(f"%{q}%"),
+                cast(Batch.quantity, String).ilike(f"%{q}%")
+            )
+        )
+
+    rows = query.order_by(Batch.name).all()
     return templates.TemplateResponse("catalogs/batches/list.html", {"request": request, "rows": rows, "q": q})
 
 @router.get("/create", response_class=HTMLResponse)
@@ -27,12 +35,16 @@ async def create(
     name: int = Form(...),
     quantity: float = Form(0.0),
     description: str = Form(""),
+    action: str = Form(""),
     db: Session = Depends(get_db),
 ):
     row = Batch(name=name, quantity=quantity, description=description, cell_id=None)
     db.add(row)
     db.commit()
-    return RedirectResponse("/catalogs/batches/", status_code=status.HTTP_303_SEE_OTHER)
+    
+    if action == "save_close":
+        return RedirectResponse("/catalogs/batches", status_code=status.HTTP_303_SEE_OTHER)
+    return RedirectResponse("/catalogs/batches/create", status_code=status.HTTP_303_SEE_OTHER)
 
 @router.get("/{row_id}/", response_class=HTMLResponse)
 async def detail(row_id: int, request: Request, db: Session = Depends(get_db)):

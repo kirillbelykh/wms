@@ -18,10 +18,16 @@ def create_page(request: Request):
     return templates.TemplateResponse("catalogs/units/create.html", {"request": request})
 
 @router.post("/create")
-def create(name: str = Form(...), description: str = Form(""), db: Session = Depends(get_db)):
+def create(name: str = Form(...), 
+           description: str = Form(""), 
+           action: str = Form(""),
+           db: Session = Depends(get_db)):
     db.add(Unit(name=name, description=description))
     db.commit()
-    return RedirectResponse("/catalogs/units/", status_code=status.HTTP_303_SEE_OTHER)
+    
+    if action == "save_close":
+        return RedirectResponse("/catalogs/units", status_code=status.HTTP_303_SEE_OTHER)
+    return RedirectResponse("/catalogs/units/create", status_code=status.HTTP_303_SEE_OTHER)
 
 @router.get("/{row_id}/", response_class=HTMLResponse)
 def detail(row_id: int, request: Request, db: Session = Depends(get_db)):
