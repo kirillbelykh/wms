@@ -41,40 +41,37 @@ async def items_create(
     request: Request,
     name: str = Form(...),
     description: str = Form(""),
-    batch_id: int = Form(None),
-    type_id: int = Form(None),
-    size_id: int = Form(None),
-    cell_id: int = Form(None),
-    manufacturer_id: int = Form(None),
-    material_id: int = Form(None),
-    unit_id: int = Form(None),
+    batch_id: str = Form(None),
+    type_id: str = Form(None),
+    size_id: str = Form(None),
+    cell_id: str = Form(None),
+    manufacturer_id: str = Form(None),
+    material_id: str = Form(None),
+    unit_id: str = Form(None),
     db: Session = Depends(get_db),
 ):
-    # Проверка на пустые значения
-    batch_id = batch_id if batch_id else None
-    type_id = type_id if type_id else None
-    size_id = size_id if size_id else None
-    cell_id = cell_id if cell_id else None
-    manufacturer_id = manufacturer_id if manufacturer_id else None
-    material_id = material_id if material_id else None
-    unit_id = unit_id if unit_id else None
+    def to_int_or_none(v):
+        return int(v) if v and v.strip() != "" else None
 
     item = Item(
         name=name,
         description=description,
-        item_type_id=type_id,
-        size_id=size_id,
-        cell_id=cell_id,
-        manufacturer_id=manufacturer_id,
-        material_id=material_id,
-        unit_id=unit_id,
-        batch_id=batch_id
+        batch_id=to_int_or_none(batch_id),
+        item_type_id=to_int_or_none(type_id),
+        size_id=to_int_or_none(size_id),
+        cell_id=to_int_or_none(cell_id),
+        manufacturer_id=to_int_or_none(manufacturer_id),
+        material_id=to_int_or_none(material_id),
+        unit_id=to_int_or_none(unit_id),
     )
+
     db.add(item)
     db.commit()
     db.refresh(item)
-    return RedirectResponse(url=f"/catalogs/items/{item.id}/", status_code=status.HTTP_303_SEE_OTHER)
-
+    return RedirectResponse(
+        url=f"/catalogs/items/",
+        status_code=status.HTTP_303_SEE_OTHER
+    )
 # ----------------------
 # Detail / Edit item
 # ----------------------
