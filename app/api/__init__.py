@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
 # Импортируем все роутеры
-from app.api.orders import router as orders_router
-from app.api.receivings import router as receivings_router
+from app.api.operations.orders import router as orders_router
+from app.api.operations.receivings import router as receivings_router
 
 from app.api.catalogs.catalogs import router as catalogs_router
 from app.api.catalogs.items import router as items_router
@@ -14,7 +14,7 @@ from app.api.catalogs.materials import router as materials_router
 from app.api.catalogs.units import router as units_router
 from app.api.catalogs.batches import router as batches_router
 from app.api.catalogs.barcodes import router as barcodes_router
-from app.api.scanner.scan import router as scanner_router
+from app.api.tsd.scan import router as scanner_router
 
 
 # Создаём список всех роутеров
