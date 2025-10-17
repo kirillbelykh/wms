@@ -3,45 +3,79 @@
 
 {% block content %}
 <div class="max-w-4xl mx-auto">
-    <h3 class="text-2xl font-bold mb-6 text-center">Проверка остатков</h3>
+    <h3 class="text-2xl font-bold mb-6">Проверка остатков</h3>
     
-    <!-- Кнопка сканирования -->
-    <div class="text-center mb-6">
+    <!-- Кнопка начала сканирования -->
+    <div class="text-center mb-4">
         <button id="scan-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-2xl text-lg shadow-md transition duration-200">
-            Сканируйте штрихкод
+            Начать сканирование
         </button>
     </div>
-    
-    <!-- Индикатор загрузки -->
-    <div id="loading" class="text-center py-6" style="display: none;">
-        <svg class="animate-spin -ml-1 mr-3 h-6 w-6 text-blue-600 inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-        </svg>
-        <span class="text-gray-600">Обработка штрихкода...</span>
-    </div>
 
+    <!-- Текст ожидания сканирования -->
+    <div id="waiting-text" class="text-center text-gray-600 mb-6 hidden">
+        ⏳ Ожидание сканирования...
+    </div>
+    
+    <!-- Результаты сканирования -->
+    <div id="product-data" class="bg-white rounded-2xl shadow p-6 mb-6 hidden">
+        <h4 class="text-lg font-semibold mb-4 text-green-600">✅ Товар найден</h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <p class="text-sm text-gray-600">Штрихкод</p>
+                <p class="font-medium" id="barcode">-</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Наименование</p>
+                <p class="font-medium" id="name">-</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Размер</p>
+                <p class="font-medium" id="size">-</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Ячейка</p>
+                <p class="font-medium" id="cell">-</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Количество</p>
+                <p class="font-medium" id="quantity">-</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Партия</p>
+                <p class="font-medium" id="batch">-</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Производитель</p>
+                <p class="font-medium" id="manufacturer">-</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Материал</p>
+                <p class="font-medium" id="material">-</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-600">Тип</p>
+                <p class="font-medium" id="type">-</p>
+            </div>
+        </div>
+    </div>
+    
     <!-- Сообщения об ошибках -->
-    <div id="error-message" class="bg-red-50 border border-red-200 rounded-2xl p-4 mb-6" style="display: none;">
+    <div id="error-message" class="bg-red-50 border border-red-200 rounded-2xl p-4 mb-6 hidden">
         <div class="flex items-center">
             <span class="text-red-600 mr-2">❌</span>
             <span class="text-red-800 font-medium" id="error-text"></span>
         </div>
     </div>
     
-    <!-- Результаты сканирования -->
-    <div id="product-data" class="bg-white rounded-2xl shadow p-6 mb-6" style="display: none;">
-        <h4 class="text-lg font-semibold mb-4 text-green-600">✅ Товар найден</h4>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div><p class="text-sm text-gray-600">Штрихкод</p><p class="font-medium" id="barcode">-</p></div>
-            <div><p class="text-sm text-gray-600">Наименование</p><p class="font-medium" id="name">-</p></div>
-            <div><p class="text-sm text-gray-600">Размер</p><p class="font-medium" id="size">-</p></div>
-            <div><p class="text-sm text-gray-600">Ячейка</p><p class="font-medium" id="cell">-</p></div>
-            <div><p class="text-sm text-gray-600">Количество</p><p class="font-medium" id="quantity">0</p></div>
-            <div><p class="text-sm text-gray-600">Партия</p><p class="font-medium" id="batch">-</p></div>
-            <div><p class="text-sm text-gray-600">Производитель</p><p class="font-medium" id="manufacturer">-</p></div>
-            <div><p class="text-sm text-gray-600">Тип</p><p class="font-medium" id="item_type">-</p></div>
-            <div><p class="text-sm text-gray-600">Материал</p><p class="font-medium" id="material">-</p></div>
+    <!-- Индикатор загрузки -->
+    <div id="loading" class="text-center py-8 hidden">
+        <div class="inline-flex items-center">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="text-gray-600">Обработка штрихкода...</span>
         </div>
     </div>
 </div>
@@ -62,25 +96,31 @@ function startScanning() {
     $('#error-message').hide();
     $('#product-data').hide();
     $('#loading').hide();
-    alert('Готов к сканированию... Наведите сканер на штрихкод');
+    $('#waiting-text').show();
 }
 
-// Обработка ввода с ТСД (HID)
+// Обработка клавиатурного ввода (ТСД в режиме HID)
 $(document).on('keypress', function(e) {
     if (!isScanning) return;
     
     const currentTime = new Date().getTime();
-    if (currentTime - lastKeyTime > 50) barcodeBuffer = '';
+    
+    if (currentTime - lastKeyTime > 50) {
+        barcodeBuffer = '';
+    }
+    
     lastKeyTime = currentTime;
     
-    if (e.which === 13) { // Enter - конец сканирования
+    if (e.which === 13) { // Enter
         e.preventDefault();
-        if (barcodeBuffer.length > 3) processBarcode(barcodeBuffer);
-        else {
+        if (barcodeBuffer.length > 3) {
+            processBarcode(barcodeBuffer);
+        } else {
             $('#error-message').show().find('#error-text').text('Неверный штрихкод');
         }
         barcodeBuffer = '';
         isScanning = false;
+        $('#waiting-text').hide();
         return;
     }
     
@@ -93,11 +133,12 @@ async function processBarcode(barcode) {
     $('#loading').show();
     $('#product-data').hide();
     $('#error-message').hide();
+    $('#waiting-text').hide();
     
     try {
         const response = await fetch('/scan/check-barcode', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ barcode: barcode.trim() })
         });
         
@@ -113,18 +154,22 @@ async function processBarcode(barcode) {
             $('#quantity').text(data.quantity || '0');
             $('#batch').text(data.batch || '-');
             $('#manufacturer').text(data.manufacturer || '-');
-            $('#item_type').text(data.item_type || '-');
             $('#material').text(data.material || '-');
+            $('#type').text(data.type || '-');
             $('#product-data').show();
         }
         
     } catch (error) {
         $('#error-message').show().find('#error-text').text('Ошибка соединения с сервером');
-        console.error(error);
+        console.error('Ошибка:', error);
     } finally {
         $('#loading').hide();
-        isScanning = false;
     }
 }
+
+// Автофокус на кнопке
+$(document).ready(function() {
+    $('#scan-btn').focus();
+});
 </script>
 {% endblock %}
