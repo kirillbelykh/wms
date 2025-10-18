@@ -12,3 +12,4 @@ class Manufacturer(Base):
     country = Column(String, nullable=True)
 
     items = relationship("Item", back_populates="manufacturer")
+    receivings = relationship("Receiving", back_populates="manufacturer")

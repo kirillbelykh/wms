@@ -1,6 +1,7 @@
 from app.database import Base
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship
+from datetime import datetime
 
 
 class Receiving(Base):
@@ -8,17 +9,15 @@ class Receiving(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True, nullable=True)
-    quantity = Column(Integer, nullable=False)
     status = Column(String, nullable=False, default="pending")
-    created_at = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     end_at = Column(DateTime, nullable=True)
-    country = Column(String, nullable=True)
-    type = Column(String, nullable=True)
-    unit_of_measure = Column(String, nullable=True)
     comments = Column(String, nullable=True)
 
-    order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
     item_id = Column(Integer, ForeignKey("items.id"), nullable=False)
+    cell_id = Column(Integer, ForeignKey("cells.id"), nullable=True)
+    manufacturer_id = Column(Integer, ForeignKey("manufacturers.id"), nullable=True)
 
-    order = relationship("Order", back_populates="receivings")
-    item = relationship("Item", back_populates="receivings")
+    items = relationship("Item", back_populates="receivings")
+    cells = relationship("Cell", back_populates="receivings")
+    manufacturer = relationship("Manufacturer", back_populates="receivings")

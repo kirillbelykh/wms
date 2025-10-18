@@ -1,0 +1,50 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="max-w-xl mx-auto">
+  <h1 class="text-2xl font-bold mb-4">Создание приемки</h1>
+  <form action="/receivings/create" method="post" class="space-y-3">
+
+    <div>
+      <label class="block text-sm font-medium">Название (необязательно)</label>
+      <input type="text" name="name" class="w-full border rounded p-2" placeholder="Например: Приемка №42">
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium">Товар</label>
+      <select name="item_id" required class="w-full border rounded p-2">
+        <option value="">Выберите товар</option>
+        {% for i in items %}
+          <option value="{{ i.id }}">{{ i.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium">Ячейка</label>
+      <select name="cell_id" class="w-full border rounded p-2">
+        <option value="">(не выбрана)</option>
+        {% for c in cells %}
+          <option value="{{ c.id }}">{{ c.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium">Производитель</label>
+      <select name="manufacturer_id" class="w-full border rounded p-2">
+        <option value="">(не выбран)</option>
+        {% for m in manufacturers %}
+          <option value="{{ m.id }}">{{ m.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div>
+      <label class="block text-sm font-medium">Комментарий</label>
+      <textarea name="comments" rows="3" class="w-full border rounded p-2"></textarea>
+    </div>
+
+    <button class="px-4 py-2 rounded bg-blue-600 text-white">Создать</button>
+  </form>
+</div>
+{% endblock %}

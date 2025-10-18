@@ -13,8 +13,11 @@ templates = Jinja2Templates(directory="app/templates")
 # ----------------------
 @router.get("/", response_class=HTMLResponse)
 async def items_list(request: Request, db: Session = Depends(get_db)):
-    items = db.query(Item).all()
-    return templates.TemplateResponse("catalogs/items/list.html", {"request": request, "items": items})
+    items = db.query(Item).join(ItemType).all()
+    return templates.TemplateResponse(
+        "catalogs/items/list.html",
+        {"request": request, "items": items}
+    )
 
 # ----------------------
 # Show create form

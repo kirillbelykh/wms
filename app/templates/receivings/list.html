@@ -1,107 +1,22 @@
 {% extends "index.html" %}
-
 {% block content %}
-<div class="max-w-5xl mx-auto mt-8">
-  <h1 class="text-3xl font-bold mb-6">Приемки на склад</h1>
+<div class="max-w-5xl mx-auto">
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">Приемки</h1>
+    <a href="/receivings/create" class="px-4 py-2 rounded bg-blue-600 text-white">Создать приемку</a>
+  </div>
 
-  <!-- Форма добавления новой приемки -->
-  <form id="create-receiving-form" class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-    <input type="text" name="name" placeholder="Название товара" required
-           class="border rounded px-3 py-2 w-full">
-    <input type="number" name="quantity" placeholder="Количество" step="1" required
-           class="border rounded px-3 py-2 w-full">
-    <input type="text" name="country" placeholder="Страна производства"
-           class="border rounded px-3 py-2 w-full">
-    <input type="text" name="type" placeholder="Тип товара"
-           class="border rounded px-3 py-2 w-full">
-    <input type="text" name="unit_of_measure" placeholder="Ед. измерения"
-           class="border rounded px-3 py-2 w-full">
-    <input type="text" name="comments" placeholder="Комментарий"
-           class="border rounded px-3 py-2 w-full">
-    <select name="order_id" required class="border rounded px-3 py-2 w-full">
-      <option value="" disabled selected>Выберите заказ</option>
-      {% for order in orders %}
-      <option value="{{ order.id }}">{{ order.name }}</option>
-      {% endfor %}
-    </select>
-    <select name="item_id" required class="border rounded px-3 py-2 w-full">
-      <option value="" disabled selected>Выберите товар</option>
-      {% for item in items %}
-      <option value="{{ item.id }}">{{ item.name }}</option>
-      {% endfor %}
-    </select>
-    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded col-span-full">Создать приемку</button>
-  </form>
-
-  <!-- Список приемок -->
-  <ul id="receivings-list" class="space-y-4">
-    {% for rec in receivings %}
-    <li data-id="{{ rec.id }}" class="flex justify-between items-center p-4 border rounded hover:shadow">
-      <div>
-        <h2 class="font-semibold text-lg">{{ rec.name }}</h2>
-        <p class="text-gray-500"Кол-во: {{ rec.quantity }} | Статус: {{ rec.status }}</p>
-        <p class="text-sm text-gray-400">{{ rec.country }} | {{ rec.type }} | {{ rec.unit_of_measure }}</p>
-        {% if rec.comments %}<p class="text-sm text-gray-500 italic">Комментарий: {{ rec.comments }}</p>{% endif %}
-      </div>
-      <button onclick="deleteReceiving({{ rec.id }}, this)" class="text-red-500 hover:text-red-700 ml-4">🗑️</button>
-    </li>
+  <ul class="space-y-2">
+    {% for r in receivings %}
+      <li class="p-3 rounded border hover:shadow">
+        <a href="/receivings/{{ r.id }}/" class="font-medium">{{ r.name or ('Приемка #' ~ r.id) }}</a>
+        <div class="text-sm text-gray-500">
+          {{ r.status }} · {{ r.created_at.strftime("%d.%m.%Y %H:%M") }}
+        </div>
+      </li>
     {% else %}
-    <li>Нет приемок</li>
+      <li class="text-gray-400">Пока пусто</li>
     {% endfor %}
   </ul>
 </div>
-
-<script>
-const form = document.getElementById('create-receiving-form');
-const list = document.getElementById('receivings-list');
-
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const formData = new FormData(form);
-
-  try {
-    const response = await fetch('/receivings/create', {
-      method: 'POST',
-      body: formData
-    });
-
-    const receiving = await response.json();
-    if (receiving.id) {
-      const li = document.createElement('li');
-      li.dataset.id = receiving.id;
-      li.className = 'flex justify-between items-center p-4 border rounded hover:shadow';
-      li.innerHTML = `
-        <div>
-          <h2 class="font-semibold text-lg">${receiving.name}</h2>
-          <p class="text-gray-500">Кол-во: ${receiving.quantity} | Статус: ${receiving.status}</p>
-          <p class="text-sm text-gray-400">${receiving.country || ""} | ${receiving.type || ""} | ${receiving.unit_of_measure || ""}</p>
-          ${receiving.comments ? `<p class="text-sm text-gray-500 italic">Комментарий: ${receiving.comments}</p>` : ""}
-        </div>
-        <button onclick="deleteReceiving(${receiving.id}, this)" class="text-red-500 hover:text-red-700 ml-4">🗑️</button>
-      `;
-      list.appendChild(li);
-      form.reset();
-    }
-  } catch (err) {
-    console.error(err);
-    alert('Ошибка при создании приемки');
-  }
-});
-
-async function deleteReceiving(receivingId, button) {
-  if (!confirm('Вы точно хотите удалить эту приемку?')) return;
-
-  try {
-    const response = await fetch(`/receivings/delete/${receivingId}`, { method: 'DELETE' });
-    if (response.ok) {
-      button.closest('li').remove();
-    } else {
-      alert('Не удалось удалить приемку');
-    }
-  } catch (err) {
-    console.error(err);
-    alert('Ошибка при удалении приемки');
-  }
-}
-</script>
 {% endblock %}

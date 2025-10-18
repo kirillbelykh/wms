@@ -9,9 +9,11 @@
   <ul class="space-y-2">
     {% for i in items %}
       <li class="p-3 rounded border hover:shadow">
-        <a href="/catalogs/items/{{ i.id }}/" class="font-medium">{{ i.name }}</a>
+        <a href="/catalogs/items/{{ i.id }}/" class="font-medium">
+          {{ i.name }}{% if i.item_type %} ({{ i.item_type.name }}){% endif %}
+        </a>
         <div class="text-sm text-gray-500">
-          {% if i.type %}Тип: {{ i.type }}{% endif %}{% if i.size %} · Размер: {{ i.size }}{% endif %}
+          {% if i.size %}Размер: {{ i.size }}{% endif %}
         </div>
       </li>
     {% else %}

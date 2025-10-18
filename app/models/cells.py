@@ -14,3 +14,4 @@ class Cell(Base):
     items = relationship("Item", back_populates="cell")
     batches = relationship("Batch", back_populates="cell")
     barcode = relationship("Barcode", back_populates="cell", uselist=False)
+    receivings = relationship("Receiving", back_populates="cells")

@@ -1,0 +1,19 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="max-w-3xl mx-auto">
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">{{ receiving.name or ('Приемка #' ~ receiving.id) }}</h1>
+    <a href="/receivings/delete/{{ receiving.id }}" class="px-3 py-1 bg-red-600 text-white rounded">Удалить</a>
+  </div>
+
+  <div class="space-y-2">
+    <p><b>Статус:</b> {{ receiving.status }}</p>
+    <p><b>Создана:</b> {{ receiving.created_at.strftime("%d.%m.%Y %H:%M") }}</p>
+    {% if receiving.end_at %}<p><b>Завершена:</b> {{ receiving.end_at.strftime("%d.%m.%Y %H:%M") }}</p>{% endif %}
+    {% if receiving.items %}<p><b>Товар:</b> {{ receiving.items.name }}</p>{% endif %}
+    {% if receiving.cells %}<p><b>Ячейка:</b> {{ receiving.cells.name }}</p>{% endif %}
+    {% if receiving.manufacturer %}<p><b>Производитель:</b> {{ receiving.manufacturer.name }}</p>{% endif %}
+    {% if receiving.comments %}<p><b>Комментарий:</b> {{ receiving.comments }}</p>{% endif %}
+  </div>
+</div>
+{% endblock %}
