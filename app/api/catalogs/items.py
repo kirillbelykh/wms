@@ -12,12 +12,11 @@ templates = Jinja2Templates(directory="app/templates")
 # List all items
 # ----------------------
 @router.get("/", response_class=HTMLResponse)
-async def items_list(request: Request, db: Session = Depends(get_db)):
-    items = db.query(Item).join(ItemType).all()
+async def items_root(request: Request):
     return templates.TemplateResponse(
-        "catalogs/items/list.html",
-        {"request": request, "items": items}
+        "catalogs/items/index.html", {"request": request}
     )
+    
 
 # ----------------------
 # Show create form
@@ -75,6 +74,49 @@ async def items_create(
         url=f"/catalogs/items/",
         status_code=status.HTTP_303_SEE_OTHER
     )
+    
+@router.get("/raw/", response_class=HTMLResponse)
+async def items_raw(request: Request, db: Session = Depends(get_db)):
+    items = (
+        db.query(Item)
+        .join(ItemType)
+        .filter(ItemType.name == "Сырье")
+        .all()
+    )
+    return templates.TemplateResponse(
+        "catalogs/items/list.html",
+        {"request": request, "items": items, "section": "Сырье"}
+    )
+
+
+@router.get("/finished/", response_class=HTMLResponse)
+async def items_finished(request: Request, db: Session = Depends(get_db)):
+    items = (
+        db.query(Item)
+        .join(ItemType)
+        .filter(ItemType.name == "Готовая продукция")
+        .all()
+    )
+    return templates.TemplateResponse(
+        "catalogs/items/list.html",
+        {"request": request, "items": items, "section": "Готовая продукция"}
+    )
+
+
+@router.get("/consumable/", response_class=HTMLResponse)
+async def items_consumable(request: Request, db: Session = Depends(get_db)):
+    items = (
+        db.query(Item)
+        .join(ItemType)
+        .filter(ItemType.name == "Расходники")
+        .all()
+    )
+    return templates.TemplateResponse(
+        "catalogs/items/list.html",
+        {"request": request, "items": items, "section": "Расходник"}
+    )
+    
+    
 # ----------------------
 # Detail / Edit item
 # ----------------------
@@ -152,3 +194,8 @@ async def items_delete(item_id: int, db: Session = Depends(get_db)):
         db.delete(item)
         db.commit()
     return RedirectResponse(url="/catalogs/items/", status_code=status.HTTP_303_SEE_OTHER)
+
+
+
+    
+    

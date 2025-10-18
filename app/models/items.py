@@ -28,3 +28,23 @@ class Item(Base):
     barcode = relationship("Barcode", back_populates="item", uselist=False)
     item_type = relationship("ItemType", back_populates="items")  # ← исправлено
     sizes = relationship("Size", back_populates="items")
+    
+    @property
+    def full_name(self):
+        t = self.item_type.name if self.item_type else ""
+        if t == "Сырье":
+            return f"{self.manufacturer.name if self.manufacturer else ''} " \
+                   f"{self.material.name if self.material else ''} " \
+                   f"{self.name or ''} " \
+                   f"{self.sizes.name if self.sizes else ''}".strip()
+                   
+        elif t == "Готовая продукция":
+            return f"{self.name or ''} " \
+                   f"{self.material.name if self.material else ''} " \
+                   f"{self.sizes.name if self.sizes else ''} " \
+                   f"{self.batches.name if self.batches else ''}".strip()
+        elif t == "Расходник":
+            return f"{self.name or ''} {self.sizes.name if self.sizes else ''}".strip()
+        return self.name
+    
+    

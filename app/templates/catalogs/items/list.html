@@ -2,18 +2,19 @@
 {% block content %}
 <div class="max-w-5xl mx-auto">
   <div class="flex justify-between items-center mb-4">
-    <h1 class="text-2xl font-bold">Номенклатура</h1>
+    <h1 class="text-2xl font-bold">{{ section }}</h1>
     <a href="/catalogs/items/create" class="px-4 py-2 rounded bg-blue-600 text-white">Добавить</a>
   </div>
 
   <ul class="space-y-2">
     {% for i in items %}
-      <li class="p-3 rounded border hover:shadow">
+      <li class="p-3 rounded border hover:shadow bg-white">
         <a href="/catalogs/items/{{ i.id }}/" class="font-medium">
-          {{ i.name }}{% if i.item_type %} ({{ i.item_type.name }}){% endif %}
+          {{ i.full_name }}
         </a>
         <div class="text-sm text-gray-500">
-          {% if i.size %}Размер: {{ i.size }}{% endif %}
+          {% if i.item_type %}Тип: {{ i.item_type.name }}{% endif %}
+          {% if i.unit %} · Ед. изм.: {{ i.unit.name }}{% endif %}
         </div>
       </li>
     {% else %}
