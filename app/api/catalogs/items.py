@@ -43,7 +43,7 @@ async def items_create(
     request: Request,
     name: str = Form(...),
     description: str = Form(""),
-    batch_id: str = Form(None),
+    batch: str = Form(None),
     type_id: str = Form(None),
     size_id: str = Form(None),
     cell_id: str = Form(None),
@@ -58,7 +58,7 @@ async def items_create(
     item = Item(
         name=name,
         description=description,
-        batch_id=to_int_or_none(batch_id),
+        batch=batch,
         item_type_id=to_int_or_none(type_id),
         size_id=to_int_or_none(size_id),
         cell_id=to_int_or_none(cell_id),
@@ -148,7 +148,7 @@ async def items_update(
     request: Request,
     name: str = Form(...),
     description: str = Form(""),
-    batch_id: int = Form(None),  # Исправлено: добавлен batch_id
+    batch: int = Form(None),  # Исправлено: добавлен batch_id
     type_id: int = Form(None),   # Исправлено: int вместо str
     size_id: int = Form(None),   # Исправлено: int вместо str
     cell_id: int = Form(None),
@@ -162,7 +162,7 @@ async def items_update(
         raise HTTPException(404, "Item not found")
     
     # Проверка на пустые значения
-    batch_id = batch_id if batch_id else None
+    batch = batch if batch else None
     type_id = type_id if type_id else None
     size_id = size_id if size_id else None
     cell_id = cell_id if cell_id else None
@@ -172,7 +172,7 @@ async def items_update(
 
     item.name = name
     item.description = description
-    item.batch_id = batch_id
+    item.batch = batch
     item.item_type_id = type_id
     item.size_id = size_id
     item.cell_id = cell_id

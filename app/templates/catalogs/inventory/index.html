@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Остатки на складе</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Товар</th>
+            <th>Партия</th>
+            <th>Количество</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item_name, batch_number, quantity, item_id in inventory %}
+        <tr>
+            <td>{{ item_name }}</td>
+            <td>{{ batch_number }}</td>
+            <td>{{ quantity }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

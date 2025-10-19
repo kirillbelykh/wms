@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy import Column, Integer, String, Float, ForeignKey
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -10,6 +10,9 @@ class Cell(Base):
     name = Column(String, index=True, nullable=False)
     description = Column(String, nullable=True)
     capacity = Column(Float, default=0.0)
+    item_id = Column(Integer, ForeignKey('items.id'), nullable=True)
+    batch_id = Column(Integer, ForeignKey('batches.id'), nullable=True)
+    receiving_id = Column(Integer, ForeignKey('receivings.id'), nullable=True)
 
     items = relationship("Item", back_populates="cell")
     batches = relationship("Batch", back_populates="cell")

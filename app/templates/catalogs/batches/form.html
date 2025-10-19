@@ -1,0 +1,32 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="max-w-md mx-auto">
+  <h1 class="text-2xl font-bold mb-4">Создать партию</h1>
+
+  <form action="/catalogs/batches/create" method="post" class="space-y-4">
+    <div>
+      <label for="name" class="block font-medium">Номер партии</label>
+      <input type="text" id="name" name="name" class="w-full border rounded px-3 py-2" required>
+    </div>
+
+    <div>
+      <label for="quantity" class="block font-medium">Количество</label>
+      <input type="number" id="quantity" name="quantity" step="any" class="w-full border rounded px-3 py-2" required>
+    </div>
+
+    <div>
+      <label for="item_id" class="block font-medium">Товар</label>
+      <select id="item_id" name="item_id" class="w-full border rounded px-3 py-2">
+        {% for i in items %}
+          <option value="{{ i.id }}">{{ i.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="flex justify-end">
+      <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Создать</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

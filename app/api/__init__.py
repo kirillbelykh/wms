@@ -12,6 +12,7 @@ from app.api.catalogs.manufacturers import router as manufacturers_router
 from app.api.catalogs.materials import router as materials_router
 from app.api.catalogs.units import router as units_router
 from app.api.catalogs.batches import router as batches_router
+from app.api.catalogs.inventory import router as inventory_router
 from app.api.catalogs.barcodes import router as barcodes_router
 from app.api.tsd.scan import router as scanner_router
 
@@ -29,5 +30,6 @@ all_routers = [
     units_router,
     batches_router,
     barcodes_router,
-    scanner_router
+    scanner_router,
+    inventory_router,
 ]

@@ -1,0 +1,50 @@
+{% extends "index.html" %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto">
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">Остатки по ячейкам</h1>
+  </div>
+
+  <table class="w-full border-collapse">
+    <thead>
+      <tr class="bg-gray-100 text-left">
+        <th class="p-2 border">Товар</th>
+        <th class="p-2 border">Партия</th>
+        <th class="p-2 border">Ячейка</th>
+        <th class="p-2 border">Количество</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+        <tr class="hover:bg-gray-50">
+          <td class="p-2 border">{{ item.name }}</td>
+          <td class="p-2 border">
+            {% if item.batches %}
+              {% for batch in item.batches %}
+                {{ batch.name }}{% if not loop.last %}, {% endif %}
+              {% endfor %}
+            {% else %}
+              —
+            {% endif %}
+          </td>
+          <td class="p-2 border">{{ item.cell.name if item.cell else "—" }}</td>
+          <td class="p-2 border">
+            {% if item.batches %}
+              {% for batch in item.batches %}
+                {{ batch.quantity or 0 }}{% if not loop.last %}, {% endif %}
+              {% endfor %}
+            {% else %}
+              —
+            {% endif %}
+          </td>
+        </tr>
+      {% else %}
+        <tr>
+          <td colspan="4" class="text-center text-gray-400 p-3">Нет данных</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

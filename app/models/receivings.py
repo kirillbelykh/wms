@@ -15,7 +15,6 @@ class Receiving(Base):
     comments = Column(String, nullable=True)
 
     item_id = Column(Integer, ForeignKey("items.id"), nullable=False)
-    cell_id = Column(Integer, ForeignKey("cells.id"), nullable=True)
     manufacturer_id = Column(Integer, ForeignKey("manufacturers.id"), nullable=True)
 
     items = relationship("Item", back_populates="receivings")

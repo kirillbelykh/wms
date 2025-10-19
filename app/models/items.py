@@ -11,16 +11,14 @@ class Item(Base):
     name = Column(String, index=True, nullable=False)
     description = Column(String, nullable=True)
 
-    cell_id = Column(Integer, ForeignKey("cells.id"), nullable=True)
     manufacturer_id = Column(Integer, ForeignKey("manufacturers.id"), nullable=True)
     material_id = Column(Integer, ForeignKey("materials.id"), nullable=True)
     unit_id = Column(Integer, ForeignKey("units.id"), nullable=True)
     size_id = Column(Integer, ForeignKey("sizes.id"), nullable=True)
     item_type_id = Column(Integer, ForeignKey("item_types.id"), nullable=True)
-    batch_id = Column(Integer, ForeignKey("batches.id"), nullable=True)
 
     cell = relationship("Cell", back_populates="items")
-    batches = relationship("Batch", back_populates="item")
+    batch = relationship("Batch", back_populates="item")
     receivings = relationship("Receiving", back_populates="items")
     manufacturer = relationship("Manufacturer", back_populates="items")
     material = relationship("Material", back_populates="items")
