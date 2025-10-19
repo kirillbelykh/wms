@@ -20,8 +20,8 @@
         <tr class="hover:bg-gray-50">
           <td class="p-2 border">{{ item.name }}</td>
           <td class="p-2 border">
-            {% if item.batches %}
-              {% for batch in item.batches %}
+            {% if item.batch %}
+              {% for batch in item.batch %}
                 {{ batch.name }}{% if not loop.last %}, {% endif %}
               {% endfor %}
             {% else %}
@@ -30,7 +30,7 @@
           </td>
           <td class="p-2 border">{{ item.cell.name if item.cell else "—" }}</td>
           <td class="p-2 border">
-            {% if item.batches %}
+            {% if item.batch %}
               {% for batch in item.batches %}
                 {{ batch.quantity or 0 }}{% if not loop.last %}, {% endif %}
               {% endfor %}

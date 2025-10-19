@@ -10,7 +10,8 @@ class Item(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True, nullable=False)
     description = Column(String, nullable=True)
-
+    quantity = Column(Integer, default=0.0)
+    
     manufacturer_id = Column(Integer, ForeignKey("manufacturers.id"), nullable=True)
     material_id = Column(Integer, ForeignKey("materials.id"), nullable=True)
     unit_id = Column(Integer, ForeignKey("units.id"), nullable=True)
