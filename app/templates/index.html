@@ -19,6 +19,10 @@
       <a href="/catalogs/" class="block px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 font-medium">Справочники</a>
       <a href="/scan/" class="block px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 font-medium">Проверка остатков</a>
       <a href="/catalogs/batches" class="block px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 font-medium">Партии</a>
+
+      <!-- ✅ Новый раздел -->
+      <a href="/catalogs/inventory" class="block px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 font-medium">Остатки</a>
+
       <a href="/receivings" class="block px-3 py-2 rounded-lg hover:bg-blue-50 hover:text-blue-600 font-medium">Приемки</a>
     </nav>
     <div class="p-4 border-t">
@@ -27,7 +31,7 @@
   </aside>
 
   <!-- Основная часть -->
-<div class="flex-1 flex flex-col transition-all duration-200 ease-in-out">
+  <div class="flex-1 flex flex-col transition-all duration-200 ease-in-out">
 
     <!-- Верхняя панель -->
     <header class="h-16 bg-white border-b flex items-center justify-between px-6 shadow-sm">
@@ -53,7 +57,7 @@
         <div class="bg-white rounded-2xl shadow p-6 hover:shadow-md transition">
           <h4 class="text-lg font-semibold mb-2">Товары</h4>
           <p class="text-gray-600 mb-4">Управление товарами на складе</p>
-          <a href="catalogs/items" class="text-blue-600 font-medium hover:underline">Перейти к товарам →</a>
+          <a href="/catalogs/items" class="text-blue-600 font-medium hover:underline">Перейти к товарам →</a>
         </div>
 
         <!-- Карточка: Ячейки -->
@@ -67,7 +71,7 @@
         <div class="bg-white rounded-2xl shadow p-6 hover:shadow-md transition">
           <h4 class="text-lg font-semibold mb-2">Партии</h4>
           <p class="text-gray-600 mb-4">Приход и отгрузка партий</p>
-          <a href="/batches" class="text-blue-600 font-medium hover:underline">Перейти к партиям →</a>
+          <a href="/catalogs/batches" class="text-blue-600 font-medium hover:underline">Перейти к партиям →</a>
         </div>
 
       </div>
