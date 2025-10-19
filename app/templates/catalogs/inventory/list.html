@@ -18,7 +18,14 @@
     <tbody>
       {% for item in items %}
         <tr class="hover:bg-gray-50">
-          <td class="p-2 border">{{ item.name }}</td>
+          <td class="p-2 border">
+            {{ [
+                item.manufacturer.name if item.manufacturer else '',
+                item.material.name if item.material else '',
+                item.name or '',
+                item.sizes.name if item.sizes else ''
+            ] | select('string') | reject('equalto', '') | join(' ') }}
+          </td>
           <td class="p-2 border">
             {% if item.batch %}
               {% for batch in item.batch %}
@@ -31,7 +38,7 @@
           <td class="p-2 border">{{ item.cell.name if item.cell else "—" }}</td>
           <td class="p-2 border">
             {% if item.batch %}
-              {% for batch in item.batches %}
+              {% for batch in item.batch %}
                 {{ batch.quantity or 0 }}{% if not loop.last %}, {% endif %}
               {% endfor %}
             {% else %}
