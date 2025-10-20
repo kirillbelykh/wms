@@ -1,9 +1,0 @@
-{% extends "index.html" %}
-{% from "catalogs/cells/form.html" import form_fields %}
-
-{% block content %}
-<div class="max-w-3xl mx-auto">
-  <h1 class="text-xl font-bold mb-4">{% if cell %}Редактировать{% else %}Добавить{% endif %} ячейку</h1>
-  {{ form_fields(obj=cell) }}
-</div>
-{% endblock %}

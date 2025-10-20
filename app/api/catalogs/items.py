@@ -44,14 +44,14 @@ async def items_create(
     request: Request,
     name: str = Form(...),
     description: str = Form(""),
-    batch_name: str = Form(None),
-    type_id: str = Form(None),
+    batch_id: str = Form(None),
+    item_type_id: str = Form(None),
     size_id: str = Form(None),
-    cell_name: str = Form(None),
+    cell_id: str = Form(None),        # исправлено
     manufacturer_id: str = Form(None),
     material_id: str = Form(None),
     unit_id: str = Form(None),
-    quantity: float = Form(0),
+    quantity: int = Form(0),
     db: Session = Depends(get_db),
 ):
     def to_int_or_none(v):
@@ -60,7 +60,7 @@ async def items_create(
     item = Item(
         name=name,
         description=description,
-        item_type_id=to_int_or_none(type_id),
+        item_type_id=to_int_or_none(item_type_id),
         size_id=to_int_or_none(size_id),
         manufacturer_id=to_int_or_none(manufacturer_id),
         material_id=to_int_or_none(material_id),
@@ -71,22 +71,20 @@ async def items_create(
     db.commit()
     db.refresh(item)
 
-    # Если пользователь указал партию — создаём её
-    if batch_name:
-        batch = Batch(
-            name=batch_name,
-            item_id=item.id
-        )
-        db.add(batch)
-        db.commit()
-    
-    if cell_name:
-        cell = Cell(
-            name=cell_name,
-            item_id=item.id
-        )
-        db.add(cell)
-        db.commit()
+    # Привязка к ячейке, если выбрана
+    if cell_id:
+        cell = db.query(Cell).filter(Cell.id == to_int_or_none(cell_id)).first()
+        if cell:
+            cell.item_id = item.id
+            db.commit()
+
+    # Привязка к партии, если выбрана
+    if batch_id:
+        batch = db.query(Batch).filter(Batch.id == to_int_or_none(batch_id)).first()
+        if batch:
+            batch.item_id = item.id
+            batch.quantity = quantity
+            db.commit()
 
     return RedirectResponse(
         url="/catalogs/items/",

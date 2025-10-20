@@ -1,5 +1,5 @@
-{% macro form_fields(obj=None) %}
-<form method="post" class="grid gap-3">
+{% macro form_fields(action, obj=None) %}
+<form method="post" action="{{ action }}" class="grid gap-3">
     <input name="name" class="border rounded p-2" placeholder="Название" required
            value="{{ obj.name if obj else '' }}">
     <input name="description" class="border rounded p-2" placeholder="Описание"
@@ -9,7 +9,7 @@
 
     <div class="flex gap-2">
       <button class="px-4 py-2 rounded bg-green-600 text-white" type="submit">Сохранить</button>
-      <a href="/catalogs/cells/" class="px-4 py-2 rounded bg-gray-300">Сохранить и закрыть</a>
+      <a href="/catalogs/cells/" class="px-4 py-2 rounded bg-gray-300">Закрыть</a>
     </div>
 </form>
 {% endmacro %}

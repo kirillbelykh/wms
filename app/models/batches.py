@@ -9,7 +9,7 @@ class Batch(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(Integer, nullable=False, unique=True)
     description = Column(String, nullable=True)
-    quantity = Column(Float, default=0.0)
+    quantity = Column(Integer, default=0.0)
     manufacture_date = Column(Date, nullable=True)
     expiry_date = Column(Date, nullable=True)
     

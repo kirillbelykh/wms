@@ -1,94 +1,152 @@
-{% macro form_fields(obj=None, item_types=[], sizes=[], cells=[], manufacturers=[], materials=[], batches = [], units=[]) %}
-<form method="post" 
-      action="{{ '/catalogs/items/' ~ obj.id ~ '/update' if obj else '/catalogs/items/create' }}"
-      class="grid gap-3">
+{% macro form_fields(
+    obj=None, 
+    item_types=[], 
+    sizes=[], 
+    cells=[], 
+    manufacturers=[], 
+    materials=[], 
+    batches=[], 
+    units=[]
+) %}
+<div class="flex justify-center items-start mt-10">
+  <form 
+    method="post" 
+    action="{{ '/catalogs/items/' ~ obj.id ~ '/update' if obj else '/catalogs/items/create' }}"
+    class="bg-white shadow-md rounded-2xl p-8 w-full max-w-lg space-y-4"
+  >
+    <h2 class="text-xl font-semibold text-center mb-4">
+      {{ 'Редактирование товара' if obj else 'Создание товара' }}
+    </h2>
 
-  <!-- Название -->
-  <input name="name" class="border rounded p-2" placeholder="Название" required
-         value="{{ obj.name if obj else '' }}">
+    <!-- Название -->
+    <input 
+      name="name" 
+      class="border rounded-lg w-full p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+      placeholder="Название" 
+      required
+      value="{{ obj.name if obj else '' }}"
+    >
 
-  <!-- Описание -->
-  <input name="description" class="border rounded p-2" placeholder="Описание"
-         value="{{ obj.description if obj else '' }}">
+    <!-- Описание -->
+    <input 
+      name="description" 
+      class="border rounded-lg w-full p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+      placeholder="Описание"
+      value="{{ obj.description if obj else '' }}"
+    >
 
-  <!-- Тип товара -->
-  <select name="item_type_id" class="border rounded p-2">
-    <option value="">Тип</option>
-    {% for item_type in item_types %}
-      <option value="{{ item_type.id }}" {% if obj and obj.item_type_id == item_type.id %}selected{% endif %}>
+    <!-- Тип товара -->
+    <select 
+      name="item_type_id" 
+      class="border rounded-lg w-full p-2 bg-white focus:ring-2 focus:ring-blue-400 focus:outline-none"
+    >
+      <option value="">Тип</option>
+      {% for item_type in item_types %}
+        <option 
+          value="{{ item_type.id }}" 
+          {% if obj and obj.item_type_id == item_type.id %}selected{% endif %}
+        >
           {{ item_type.name }}
-      </option>
-    {% endfor %}
-  </select>
+        </option>
+      {% endfor %}
+    </select>
 
-  <!-- Размер -->
-  <select name="size_id" class="border rounded p-2">
-    <option value="">Размер</option>
-    {% for size in sizes %}
-      <option value="{{ size.id }}" {% if obj and obj.size_id == size.id %}selected{% endif %}>
+    <!-- Размер -->
+    <select 
+      name="size_id" 
+      class="border rounded-lg w-full p-2 bg-white focus:ring-2 focus:ring-blue-400 focus:outline-none"
+    >
+      <option value="">Размер</option>
+      {% for size in sizes %}
+        <option 
+          value="{{ size.id }}" 
+          {% if obj and obj.size_id == size.id %}selected{% endif %}
+        >
           {{ size.name }}
-      </option>
-    {% endfor %}
-  </select>
+        </option>
+      {% endfor %}
+    </select>
 
-  <!-- Ячейка -->
-  <select name="cell_id" class="border rounded p-2">
-    <option value="">Ячейка</option>
-    {% for cell in cells %}
-      <option value="{{ cell.id }}" {% if obj and obj.cell_id == cell.id %}selected{% endif %}>
+    <!-- Ячейка -->
+    <select 
+      name="cell_id" 
+      class="border rounded-lg w-full p-2 bg-white focus:ring-2 focus:ring-blue-400 focus:outline-none"
+    >
+      <option value="">Ячейка</option>
+      {% for cell in cells %}
+        <option 
+          value="{{ cell.id }}" 
+          {% if obj and obj.cell_id == cell.id %}selected{% endif %}
+        >
           {{ cell.name }}
-      </option>
-    {% endfor %}
-  </select>
+        </option>
+      {% endfor %}
+    </select>
 
-  <!-- Производитель -->
-  <select name="manufacturer_id" class="border rounded p-2">
-    <option value="">Производитель</option>
-    {% for manufacturer in manufacturers %}
-      <option value="{{ manufacturer.id }}" {% if obj and obj.manufacturer_id == manufacturer.id %}selected{% endif %}>
+    <!-- Производитель -->
+    <select 
+      name="manufacturer_id" 
+      class="border rounded-lg w-full p-2 bg-white focus:ring-2 focus:ring-blue-400 focus:outline-none"
+    >
+      <option value="">Производитель</option>
+      {% for manufacturer in manufacturers %}
+        <option 
+          value="{{ manufacturer.id }}" 
+          {% if obj and obj.manufacturer_id == manufacturer.id %}selected{% endif %}
+        >
           {{ manufacturer.name }}
-      </option>
-    {% endfor %}
-  </select>
+        </option>
+      {% endfor %}
+    </select>
 
-  <!-- Материал -->
-  <select name="material_id" class="border rounded p-2">
-    <option value="">Материал</option>
-    {% for material in materials %}
-      <option value="{{ material.id }}" {% if obj and obj.material_id == material.id %}selected{% endif %}>
+    <!-- Материал -->
+    <select 
+      name="material_id" 
+      class="border rounded-lg w-full p-2 bg-white focus:ring-2 focus:ring-blue-400 focus:outline-none"
+    >
+      <option value="">Материал</option>
+      {% for material in materials %}
+        <option 
+          value="{{ material.id }}" 
+          {% if obj and obj.material_id == material.id %}selected{% endif %}
+        >
           {{ material.name }}
-      </option>
-    {% endfor %}
-  </select>
+        </option>
+      {% endfor %}
+    </select>
 
-  <select name="batch_id" class="border rounded p-2">
-    <option value="">Партия</option>
-    {% for batch in batches %}
-      <option value="{{ batch.id }}" {% if obj and obj.batch_id == batch.id %}selected{% endif %}>
+    <!-- Партия -->
+    <select 
+      name="batch_id" 
+      class="border rounded-lg w-full p-2 bg-white focus:ring-2 focus:ring-blue-400 focus:outline-none"
+    >
+      <option value="">Партия</option>
+      {% for batch in batches %}
+        <option 
+          value="{{ batch.id }}" 
+          {% if obj and obj.batch_id == batch.id %}selected{% endif %}
+        >
           {{ batch.name }}
-      </option>
-    {% endfor %}
-  </select> 
+        </option>
+      {% endfor %}
+    </select> 
 
-  <!-- Количество + Единица измерения -->
-  <div class="flex gap-2 items-center">
-    <label class="text-gray-600 text-sm w-24">Количество</label>
-
-    <div class="flex items-center border rounded-lg overflow-hidden w-full max-w-sm">
+    <!-- Количество + Единица измерения -->
+    <div class="flex flex-col sm:flex-row gap-2 items-center">
       <input
         name="quantity"
         type="number"
         min="0"
         step="0.01"
-        class="p-2 w-2/3 outline-none"
-        placeholder="Введите количество"
+        class="border rounded-lg w-full sm:w-2/3 p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+        placeholder="Количество"
         value="{{ obj.quantity if obj and obj.quantity else '' }}"
       >
       <select
         name="unit_id"
-        class="border-l p-2 w-1/3 bg-gray-50 hover:bg-gray-100"
+        class="border rounded-lg w-full sm:w-1/3 p-2 bg-white focus:ring-2 focus:ring-blue-400 focus:outline-none"
       >
-        <option value="">—</option>
+        <option value="">Ед.</option>
         {% for unit in units %}
           <option value="{{ unit.id }}" {% if obj and obj.unit_id == unit.id %}selected{% endif %}>
             {{ unit.name }}
@@ -96,12 +154,22 @@
         {% endfor %}
       </select>
     </div>
-  </div>
 
-  <!-- Кнопки -->
-  <div class="flex gap-2">
-    <button class="px-4 py-2 rounded bg-green-600 text-white" type="submit">Сохранить</button>
-    <a href="/catalogs/items/" class="px-4 py-2 rounded bg-gray-300">Отмена</a>
-  </div>
-</form>
+    <!-- Кнопки -->
+    <div class="flex justify-center gap-3 pt-4">
+      <button 
+        class="px-5 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition"
+        type="submit"
+      >
+        Сохранить
+      </button>
+      <a 
+        href="/catalogs/items/" 
+        class="px-5 py-2 rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 transition"
+      >
+        Отмена
+      </a>
+    </div>
+  </form>
+</div>
 {% endmacro %}

@@ -14,7 +14,7 @@ async def inventory_list(request: Request, db: Session = Depends(get_db)):
     items = (
         db.query(Item)
         .options(
-            joinedload(Item.cell),
+            joinedload(Item.cells),
             joinedload(Item.batch)
         )
         .all()

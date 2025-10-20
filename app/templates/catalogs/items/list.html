@@ -1,25 +1,56 @@
 {% extends "index.html" %}
+
 {% block content %}
-<div class="max-w-5xl mx-auto">
-  <div class="flex justify-between items-center mb-4">
+<div class="max-w-6xl mx-auto">
+  <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-bold">{{ section }}</h1>
-    <a href="/catalogs/items/create" class="px-4 py-2 rounded bg-blue-600 text-white">Добавить</a>
+    <a href="/catalogs/items/create" class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700">Добавить товар</a>
   </div>
 
-  <ul class="space-y-2">
-    {% for i in items %}
-      <li class="p-3 rounded border hover:shadow bg-white">
-        <a href="/catalogs/items/{{ i.id }}/" class="font-medium">
-          {{ i.full_name }}
-        </a>
-        <div class="text-sm text-gray-500">
-          {% if i.item_type %}Тип: {{ i.item_type.name }}{% endif %}
-          {% if i.unit %} · Ед. изм.: {{ i.unit.name }}{% endif %}
-        </div>
-      </li>
-    {% else %}
-      <li class="text-gray-400">Пока пусто</li>
-    {% endfor %}
-  </ul>
+  <table class="w-full border-collapse text-sm">
+    <thead>
+      <tr class="bg-gray-100 text-left">
+        <th class="p-2 border">Производитель</th>
+        <th class="p-2 border">Материал</th>
+        <th class="p-2 border">Размер</th>
+        <th class="p-2 border">Количество</th>
+        <th class="p-2 border">Ед.</th>
+        <th class="p-2 border">Партия</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+        {% if item.batch and item.batch|length > 0 %}
+          {% for batch in item.batch %}
+            <tr class="hover:bg-gray-50">
+              <td class="p-2 border">{{ item.manufacturer.name if item.manufacturer else "—" }}</td>
+              <td class="p-2 border">{{ item.material.name if item.material else "—" }}</td>
+              <td class="p-2 border">{{ item.size.name if item.size else "—" }}</td>
+              <td class="p-2 border">{{ batch.quantity or 0 }}</td>
+              <td class="p-2 border">{{ item.unit.name if item.unit else "—" }}</td>
+              <td class="p-2 border">
+                <a href="/catalogs/items/{{ item.id }}/" class="text-blue-600 hover:underline">
+                  {{ batch.name or "—" }}
+                </a>
+              </td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr class="hover:bg-gray-50">
+            <td class="p-2 border">{{ item.manufacturer.name if item.manufacturer else "—" }}</td>
+            <td class="p-2 border">{{ item.material.name if item.material else "—" }}</td>
+            <td class="p-2 border">{{ item.size.name if item.size else "—" }}</td>
+            <td class="p-2 border">0</td>
+            <td class="p-2 border">{{ item.unit.name if item.unit else "—" }}</td>
+            <td class="p-2 border">—</td>
+          </tr>
+        {% endif %}
+      {% else %}
+        <tr>
+          <td colspan="7" class="text-center text-gray-400 p-3">Пока пусто</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </div>
 {% endblock %}

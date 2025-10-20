@@ -23,7 +23,7 @@
                 item.manufacturer.name if item.manufacturer else '',
                 item.material.name if item.material else '',
                 item.name or '',
-                item.sizes.name if item.sizes else ''
+                item.size.name if item.size else ''
             ] | select('string') | reject('equalto', '') | join(' ') }}
           </td>
           <td class="p-2 border">
@@ -35,12 +35,25 @@
               —
             {% endif %}
           </td>
-          <td class="p-2 border">{{ item.cell.name if item.cell else "—" }}</td>
           <td class="p-2 border">
-            {% if item.batch %}
-              {% for batch in item.batch %}
-                {{ batch.quantity or 0 }}{% if not loop.last %}, {% endif %}
+            {% if item.cells %}
+              {% for cell in item.cells %}
+                {{ cell.name }}{% if not loop.last %}, {% endif %}
               {% endfor %}
+            {% else %}
+              —
+            {% endif %}
+          <td class="p-2 border">
+            {% if item.item_type and item.item_type.name == "Сырье" %}
+              {{ item.quantity or 0 }} {{ item.unit.name if item.unit else '' }}
+            {% elif item.item_type and item.item_type.name == "Готовая продукция" %}
+              {% if item.batch %}
+                {% for batch in item.batch %}
+                  {{ batch.quantity or 0 }} {{ item.unit.name if item.unit else '' }}{% if not loop.last %}, {% endif %}
+                {% endfor %}
+              {% else %}
+                —
+              {% endif %}
             {% else %}
               —
             {% endif %}

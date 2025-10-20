@@ -14,7 +14,7 @@ class Cell(Base):
     batch_id = Column(Integer, ForeignKey('batches.id'), nullable=True)
     receiving_id = Column(Integer, ForeignKey('receivings.id'), nullable=True)
 
-    items = relationship("Item", back_populates="cell")
+    items = relationship("Item", back_populates="cells")
     batches = relationship("Batch", back_populates="cell")
     barcode = relationship("Barcode", back_populates="cell", uselist=False)
     receivings = relationship("Receiving", back_populates="cells")
