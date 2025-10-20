@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Request, Form, status, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from app.database.create_db import get_db
 from app.models import Cell, Supply, Production, Consumable, Barcode
@@ -15,10 +15,21 @@ templates = Jinja2Templates(directory="app/templates")
 # ----------------------
 @router.get("/", response_class=HTMLResponse)
 async def list_cells(request: Request, db: Session = Depends(get_db)):
-    rows = db.query(Cell).order_by(Cell.name).all()
-    return templates.TemplateResponse(
-        "catalogs/cells/list.html",
-        {"request": request, "rows": rows}
+    rows = (
+        db.query(Cell)
+        .options(
+            joinedload(Cell.supply),
+            joinedload(Cell.productions),
+            joinedload(Cell.consumables),
+        )
+        .order_by(Cell.name)
+        .all()
+    )
+    return HTMLResponse(
+        content=templates.TemplateResponse(
+            "catalogs/cells/list.html",
+            {"request": request, "rows": rows},
+        ).body.decode()
     )
 
 

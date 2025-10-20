@@ -1,16 +1,25 @@
 {% extends "index.html" %}
 {% block content %}
-<div class="max-w-3xl mx-auto">
-  <div class="flex justify-between mb-4">
+<div class="max-w-3xl mx-auto py-6">
+  <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-bold">Размеры</h1>
-    <a class="px-4 py-2 rounded bg-blue-600 text-white" href="/catalogs/sizes/create">Добавить</a>
+    <a href="/catalogs/sizes/create" 
+       class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
+       Добавить
+    </a>
   </div>
-  <ul class="space-y-2">
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
     {% for r in rows %}
-      <li class="p-3 rounded border hover:shadow"><a href="/catalogs/sizes/{{ r.id }}/">{{ r.name }}</a></li>
+    <a href="/catalogs/sizes/{{ r.id }}/" 
+       class="block p-4 rounded-lg border hover:shadow-lg hover:border-blue-400 transition bg-white">
+      <span class="text-gray-800 font-medium">{{ r.name }}</span>
+    </a>
     {% else %}
-      <li class="text-gray-400">Пусто</li>
+    <div class="col-span-full text-gray-400 text-center py-4">
+      Пусто
+    </div>
     {% endfor %}
-  </ul>
+  </div>
 </div>
 {% endblock %}

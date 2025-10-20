@@ -7,8 +7,10 @@
     units=[],
     quantity=0
 ) %}
-<div class="flex justify-center mt-10">
-  <form method="post" class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-lg space-y-5">
+<div class="flex flex-col justify-center mt-10 space-y-4 w-full max-w-lg mx-auto">
+
+  <!-- Форма создания/редактирования -->
+  <form method="post" class="bg-white p-8 rounded-2xl shadow-lg w-full space-y-5">
 
     <h2 class="text-xl font-semibold text-center mb-4">
       {{ 'Редактирование' if obj else 'Создание' }} расходника
@@ -77,15 +79,26 @@
       value="{{ obj.quantity if obj else quantity }}" step="0.01"
     >
 
-    <!-- Кнопки -->
+    <!-- Кнопки сохранения и отмены -->
     <div class="flex justify-between gap-3 mt-4">
-      <button type="submit" class="bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700 transition">
-        Сохранить
-      </button>
-      <a href="/catalogs/consumables/" class="bg-gray-300 px-5 py-2 rounded-lg hover:bg-gray-400 transition">
-        Отмена
-      </a>
+        <button type="submit" class="bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700 transition">
+            Сохранить
+        </button>
+
+        <a href="/catalogs/consumables/" class="bg-gray-300 px-5 py-2 rounded-lg hover:bg-gray-400 transition">
+            Отмена
+        </a>
     </div>
   </form>
+
+  <!-- Отдельная форма для удаления -->
+  {% if obj %}
+  <form method="post" action="/catalogs/consumables/{{ obj.id }}/delete" onsubmit="return confirm('Удалить расходник?');" class="flex justify-end">
+      <button type="submit" class="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 transition">
+          Удалить
+      </button>
+  </form>
+  {% endif %}
+
 </div>
 {% endmacro %}

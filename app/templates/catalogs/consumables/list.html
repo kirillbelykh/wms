@@ -19,16 +19,16 @@
       </tr>
     </thead>
     <tbody>
-      {% for c in consumables %}
+      {% for item in items %}
       <tr class="hover:bg-gray-50">
-        <td class="p-2 border">{{ c.name }}</td>
-        <td class="p-2 border">{{ c.manufacturer.name if c.manufacturer else '—' }}</td>
-        <td class="p-2 border">{{ c.material.name if c.material else '—' }}</td>
-        <td class="p-2 border">{{ c.size.name if c.size else '—' }}</td>
-        <td class="p-2 border">{{ c.cells[0].name if c.cells else '—' }}</td>
-        <td class="p-2 border">{{ c.quantity }}</td>
+        <td class="p-2 border">{{ item.consumable.name }}</td>
+        <td class="p-2 border">{{ item.consumable.manufacturer.name if item.consumable.manufacturer else '—' }}</td>
+        <td class="p-2 border">{{ item.consumable.material.name if item.consumable.material else '—' }}</td>
+        <td class="p-2 border">{{ item.consumable.size.name if item.consumable.size else '—' }}</td>
+        <td class="p-2 border">{{ item.cell.name if item.cell else '—' }}</td>
+        <td class="p-2 border">{{ item.consumable.quantity }}</td>
         <td class="p-2 border">
-            <a href="/catalogs/consumables/{{ c.id }}/edit" class="text-blue-600 hover:underline">Редактировать</a>
+            <a href="/catalogs/consumables/{{ item.consumable.id }}/edit" class="text-blue-600 hover:underline">Редактировать</a>
         </td>
       </tr>
       {% else %}

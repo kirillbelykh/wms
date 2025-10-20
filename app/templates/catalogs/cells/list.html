@@ -1,28 +1,38 @@
 {% extends "index.html" %}
+
 {% block content %}
-<div class="max-w-5xl mx-auto">
-  <div class="flex justify-between items-center mb-4">
+<div class="max-w-5xl mx-auto py-6">
+  <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-bold">Ячейки</h1>
-    <a href="/catalogs/cells/create" class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition">Добавить</a>
+    <a href="/catalogs/cells/create" 
+       class="px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition">
+       Добавить
+    </a>
   </div>
 
-  <div class="overflow-x-auto">
-    <table class="min-w-full border-collapse border border-gray-200">
+  <div class="overflow-x-auto shadow rounded-lg">
+    <table class="min-w-full border border-gray-200 border-collapse text-sm">
       <thead class="bg-gray-100">
         <tr>
-          <th class="p-2 border">Ячейка</th>
-          <th class="p-2 border">Привязанный товар</th>
+          <th class="p-2 border text-left">Ячейка</th>
+          <th class="p-2 border text-left">Привязанный товар</th>
         </tr>
       </thead>
       <tbody>
         {% for c in rows %}
-        <tr class="hover:bg-gray-50">
+        <tr class="hover:bg-gray-50 transition">
           <td class="p-2 border">
-            <a href="/catalogs/cells/{{ c.id }}/" class="text-blue-600 hover:underline">{{ c.name }}</a>
+            <a href="/catalogs/cells/{{ c.id }}/" class="hover:underline text-gray-800 font-medium">
+              {{ c.name }}
+            </a>
           </td>
           <td class="p-2 border">
-            {% if c.item %}
-              {{ c.item.name }}
+            {% if c.supply %}
+              <span class="text-green-600 font-semibold">{{ c.supply.name }}</span>
+            {% elif c.production %}
+              <span class="text-blue-600 font-semibold">{{ c.production.name }}</span>
+            {% elif c.consumable %}
+              <span class="text-yellow-600 font-semibold">{{ c.consumable.name }}</span>
             {% else %}
               <span class="text-gray-400">—</span>
             {% endif %}
