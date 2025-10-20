@@ -1,15 +1,18 @@
-from fastapi import APIRouter, Request, Form, Depends, status
+from fastapi import APIRouter, HTTPException, Request, Form, Depends, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session
-from app.database import get_db
-from app.models import Batch, Item
 from fastapi.templating import Jinja2Templates
+
+from app.database import get_db
+from app.models import Batch, Supply
 
 router = APIRouter(prefix="/catalogs/batches", tags=["Batches"])
 templates = Jinja2Templates(directory="app/templates")
 
 
-# Список партий
+# ----------------------
+# List all batches
+# ----------------------
 @router.get("/", response_class=HTMLResponse)
 async def batches_list(request: Request, db: Session = Depends(get_db)):
     batches = db.query(Batch).all()
@@ -19,26 +22,35 @@ async def batches_list(request: Request, db: Session = Depends(get_db)):
     )
 
 
-# Форма создания партии
+# ----------------------
+# Show create batch form
+# ----------------------
 @router.get("/create", response_class=HTMLResponse)
 async def batches_create_form(request: Request, db: Session = Depends(get_db)):
-    items = db.query(Item).all()
+    supplies = db.query(Supply).order_by(Supply.name).all()
     return templates.TemplateResponse(
         "catalogs/batches/form.html",
-        {"request": request, "items": items},
+        {"request": request, "supplies": supplies},
     )
 
 
-# Создание партии
+# ----------------------
+# Create batch
+# ----------------------
 @router.post("/create")
 async def batches_create(
     request: Request,
     name: str = Form(...),
     quantity: float = Form(...),
-    item_id: int = Form(...),
+    supply_id: int = Form(...),
     db: Session = Depends(get_db),
 ):
-    batch = Batch(name=name, quantity=quantity, item_id=item_id)
+    # Привязка партии только к Supply
+    supply = db.query(Supply).filter(Supply.id == supply_id).first()
+    if not supply:
+        raise HTTPException(status_code=404, detail="Supply not found")
+
+    batch = Batch(name=name, quantity=quantity, supply_id=supply_id)
     db.add(batch)
     db.commit()
     db.refresh(batch)
@@ -47,3 +59,15 @@ async def batches_create(
         url="/catalogs/batches/",
         status_code=status.HTTP_303_SEE_OTHER,
     )
+
+
+# ----------------------
+# Delete batch
+# ----------------------
+@router.get("/{batch_id}/delete")
+async def batches_delete(batch_id: int, db: Session = Depends(get_db)):
+    batch = db.query(Batch).filter(Batch.id == batch_id).first()
+    if batch:
+        db.delete(batch)
+        db.commit()
+    return RedirectResponse(url="/catalogs/batches/", status_code=status.HTTP_303_SEE_OTHER)
