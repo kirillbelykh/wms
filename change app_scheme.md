@@ -39,12 +39,12 @@
  - templates/catalogs/catalogs.html
 
 3. Требуется создание
- - app/models/supply.py
- - app/models/production.py
- - app/models/consumable.py
- - app/api/catalogs/supplies.py
- - app/api/catalogs/productions.py
- - app/api/catalogs/consumables.py
+ - app/models/supply.py - создан
+ - app/models/production.py - создан 
+ - app/models/consumable.py - создан 
+ - app/api/catalogs/supplies.py - создан 
+ - app/api/catalogs/productions.py - создан 
+ - app/api/catalogs/consumables.py - создан
  - app/schemas/supply.py
  - app/schemas/production.py
  - app/schemas/consumable.py
