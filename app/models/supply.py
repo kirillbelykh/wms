@@ -6,7 +6,7 @@ class Supply(Base):
     __tablename__ = "supplies"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    name = Column(String, nullable=False, unique=True)
+    name = Column(String, nullable=False, unique=False)
     description = Column(String, nullable=True)
     quantity = Column(Float, default=0.0)
 

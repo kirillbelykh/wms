@@ -6,7 +6,7 @@ class Production(Base):
     __tablename__ = "productions"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    name = Column(String, nullable=False, unique=True)
+    name = Column(String, nullable=False, unique=False)
     description = Column(String, nullable=True)
     start_date = Column(Date, nullable=True)
     end_date = Column(Date, nullable=True)

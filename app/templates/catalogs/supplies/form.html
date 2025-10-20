@@ -7,8 +7,10 @@
     units=[],
     quantity=0
 ) %}
-<div class="flex justify-center mt-10">
-  <form method="post" class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-lg space-y-5">
+<div class="flex flex-col justify-center mt-10 w-full max-w-lg mx-auto space-y-5">
+
+  <!-- Форма создания/редактирования -->
+  <form method="post" class="bg-white p-8 rounded-2xl shadow-lg w-full space-y-5">
 
     <h2 class="text-xl font-semibold text-center mb-4">
       {{ 'Редактирование' if obj else 'Создание' }} записи
@@ -47,7 +49,7 @@
         <option value="Хирургия 2-Хлор">
         <option value="Хирургия Изопрен">
         <option value="Хирургия С Полимерным">
-    </datalist>
+      </datalist>
 
       <input 
         name="description" 
@@ -103,7 +105,7 @@
       </select>
     </div>
 
-    <!-- Кнопки -->
+    <!-- Кнопки сохранения и отмены -->
     <div class="flex justify-between gap-3 mt-4">
       <button type="submit" class="bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700 transition">
         Сохранить
@@ -111,15 +113,19 @@
       <a href="/catalogs/supplies/" class="bg-gray-300 px-5 py-2 rounded-lg hover:bg-gray-400 transition">
         Отмена
       </a>
-
-      {% if obj %}
-      <form method="post" action="/catalogs/supplies/{{ obj.id }}/delete" onsubmit="return confirm('Удалить запись?');">
-        <button type="submit" class="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 transition">
-          Удалить
-        </button>
-      </form>
-      {% endif %}
     </div>
   </form>
+
+  <!-- Кнопка удаления отдельной формой -->
+  {% if obj %}
+  <div class="flex justify-end mt-4">
+    <form method="post" action="/catalogs/supplies/{{ obj.id }}/delete" onsubmit="return confirm('Удалить запись?');">
+      <button type="submit" class="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 transition">
+        Удалить
+      </button>
+    </form>
+  </div>
+  {% endif %}
+
 </div>
 {% endmacro %}

@@ -118,6 +118,10 @@ async def edit_supply(
 async def delete_supply(supply_id: int, db: Session = Depends(get_db)):
     supply = db.get(Supply, supply_id)
     if supply:
+        # Разрываем связь с ячейкой (если есть)
+        cells = db.query(Cell).filter(Cell.supply_id == supply.id).all()
+        for cell in cells:
+            cell.supply_id = None
         db.delete(supply)
         db.commit()
     return RedirectResponse("/catalogs/supplies/", status_code=status.HTTP_303_SEE_OTHER)
