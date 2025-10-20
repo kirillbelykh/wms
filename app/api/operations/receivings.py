@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 
 from app.database.create_db import get_db
-from app.models import Receiving, Item, Cell, Manufacturer
+from app.models import Receiving, Cell, Manufacturer, Supply, Production, Consumable
 
 router = APIRouter(prefix="/receivings", tags=["receivings"])
 templates = Jinja2Templates(directory="app/templates")
@@ -24,19 +24,17 @@ async def read_receivings(request: Request, db: Session = Depends(get_db)):
 
 
 # ----------------------
-# Страница создания
+# Страница создания приемки
 # ----------------------
 @router.get("/create", response_class=HTMLResponse)
 async def receiving_create_page(request: Request, db: Session = Depends(get_db)):
-    items = db.query(Item).all()
-    cells = db.query(Cell).all()
-    manufacturers = db.query(Manufacturer).all()
-
     ctx = {
         "request": request,
-        "items": items,
-        "cells": cells,
-        "manufacturers": manufacturers,
+        "supplies": db.query(Supply).order_by(Supply.name).all(),
+        "productions": db.query(Production).order_by(Production.name).all(),
+        "consumables": db.query(Consumable).order_by(Consumable.name).all(),
+        "cells": db.query(Cell).order_by(Cell.name).all(),
+        "manufacturers": db.query(Manufacturer).order_by(Manufacturer.name).all(),
     }
     return templates.TemplateResponse("receivings/create.html", ctx)
 
@@ -49,13 +47,33 @@ async def create_receiving(
     request: Request,
     name: str = Form(""),
     comments: str = Form(""),
-    item_id: int = Form(...),
-    cell_id: str = Form(None),
-    manufacturer_id: str = Form(None),
+    supply_id: int = Form(None),
+    production_id: int = Form(None),
+    consumable_id: int = Form(None),
+    cell_id: int = Form(None),
+    manufacturer_id: int = Form(None),
     db: Session = Depends(get_db),
 ):
-    def to_int_or_none(v):
-        return int(v) if v and v.strip() != "" else None
+    def to_int_or_none(value):
+        return int(value) if value else None
+
+    # Выбираем привязанную номенклатуру
+    item_id = None
+    if supply_id:
+        supply = db.get(Supply, supply_id)
+        if not supply:
+            raise HTTPException(status_code=404, detail="Supply not found")
+        item_id = supply.id
+    elif production_id:
+        production = db.get(Production, production_id)
+        if not production:
+            raise HTTPException(status_code=404, detail="Production not found")
+        item_id = production.id
+    elif consumable_id:
+        consumable = db.get(Consumable, consumable_id)
+        if not consumable:
+            raise HTTPException(status_code=404, detail="Consumable not found")
+        item_id = consumable.id
 
     new_receiving = Receiving(
         name=name or f"Приемка от {datetime.now().strftime('%d.%m.%Y %H:%M')}",
@@ -82,10 +100,9 @@ async def create_receiving(
 # ----------------------
 @router.get("/{receiving_id}", response_class=HTMLResponse)
 async def view_receiving(receiving_id: int, request: Request, db: Session = Depends(get_db)):
-    receiving = db.query(Receiving).filter(Receiving.id == receiving_id).first()
+    receiving = db.get(Receiving, receiving_id)
     if not receiving:
         raise HTTPException(status_code=404, detail="Receiving not found")
-
     return templates.TemplateResponse(
         "receivings/detail.html",
         {"request": request, "receiving": receiving},
@@ -97,10 +114,8 @@ async def view_receiving(receiving_id: int, request: Request, db: Session = Depe
 # ----------------------
 @router.get("/delete/{receiving_id}")
 async def delete_receiving(receiving_id: int, db: Session = Depends(get_db)):
-    receiving = db.query(Receiving).filter(Receiving.id == receiving_id).first()
-    if not receiving:
-        raise HTTPException(status_code=404, detail="Receiving not found")
-
-    db.delete(receiving)
-    db.commit()
+    receiving = db.get(Receiving, receiving_id)
+    if receiving:
+        db.delete(receiving)
+        db.commit()
     return RedirectResponse(url="/receivings/", status_code=status.HTTP_303_SEE_OTHER)

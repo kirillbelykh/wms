@@ -4,30 +4,40 @@
 <div class="max-w-4xl mx-auto">
   <div class="flex justify-between items-center mb-4">
     <h1 class="text-2xl font-bold">Партии</h1>
-    <a href="/catalogs/batches/create" class="px-4 py-2 rounded bg-blue-600 text-white">Добавить</a>
+    <a href="/catalogs/batches/create" class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition">Добавить</a>
   </div>
 
-  <table class="w-full border-collapse">
-    <thead>
-      <tr class="bg-gray-100 text-left">
-        <th class="p-2 border">Номер партии</th>
-        <th class="p-2 border">Товар</th>
-        <th class="p-2 border">Количество</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for b in batches %}
-        <tr class="hover:bg-gray-50">
+  <div class="overflow-x-auto">
+    <table class="w-full border-collapse">
+      <thead>
+        <tr class="bg-gray-100 text-left">
+          <th class="p-2 border">Номер партии</th>
+          <th class="p-2 border">Товар</th>
+          <th class="p-2 border">Количество</th>
+          <th class="p-2 border">Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in batches %}
+        <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location='/catalogs/batches/{{ b.id }}/'">
           <td class="p-2 border">{{ b.name }}</td>
           <td class="p-2 border">{{ b.item.name if b.item else "—" }}</td>
           <td class="p-2 border">{{ b.quantity }}</td>
+          <td class="p-2 border">
+            <a href="/catalogs/batches/{{ b.id }}/delete" 
+               class="text-red-600 hover:underline" 
+               onclick="return confirm('Удалить эту партию?');">
+               Удалить
+            </a>
+          </td>
         </tr>
-      {% else %}
+        {% else %}
         <tr>
-          <td colspan="3" class="text-center text-gray-400 p-3">Нет партий</td>
+          <td colspan="4" class="text-center text-gray-400 p-3">Нет партий</td>
         </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 {% endblock %}

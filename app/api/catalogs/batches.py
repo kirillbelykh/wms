@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from fastapi.templating import Jinja2Templates
 
 from app.database import get_db
-from app.models import Batch, Supply
+from app.models import Batch, Production
 
 router = APIRouter(prefix="/catalogs/batches", tags=["Batches"])
 templates = Jinja2Templates(directory="app/templates")
@@ -27,10 +27,10 @@ async def batches_list(request: Request, db: Session = Depends(get_db)):
 # ----------------------
 @router.get("/create", response_class=HTMLResponse)
 async def batches_create_form(request: Request, db: Session = Depends(get_db)):
-    supplies = db.query(Supply).order_by(Supply.name).all()
+    productions = db.query(Production).order_by(Production.name).all()
     return templates.TemplateResponse(
         "catalogs/batches/form.html",
-        {"request": request, "supplies": supplies},
+        {"request": request, "productions": productions},
     )
 
 
@@ -39,18 +39,16 @@ async def batches_create_form(request: Request, db: Session = Depends(get_db)):
 # ----------------------
 @router.post("/create")
 async def batches_create(
-    request: Request,
     name: str = Form(...),
     quantity: float = Form(...),
-    supply_id: int = Form(...),
+    production_id: int = Form(...),
     db: Session = Depends(get_db),
 ):
-    # Привязка партии только к Supply
-    supply = db.query(Supply).filter(Supply.id == supply_id).first()
-    if not supply:
-        raise HTTPException(status_code=404, detail="Supply not found")
+    production = db.get(Production, production_id)
+    if not production:
+        raise HTTPException(status_code=404, detail="Production not found")
 
-    batch = Batch(name=name, quantity=quantity, supply_id=supply_id)
+    batch = Batch(name=name, quantity=quantity, production_id=production.id)
     db.add(batch)
     db.commit()
     db.refresh(batch)
@@ -66,7 +64,7 @@ async def batches_create(
 # ----------------------
 @router.get("/{batch_id}/delete")
 async def batches_delete(batch_id: int, db: Session = Depends(get_db)):
-    batch = db.query(Batch).filter(Batch.id == batch_id).first()
+    batch = db.get(Batch, batch_id)
     if batch:
         db.delete(batch)
         db.commit()

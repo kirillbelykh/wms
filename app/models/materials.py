@@ -10,4 +10,7 @@ class Material(Base):
     name = Column(String, index=True, nullable=False)
     description = Column(String, nullable=True)
 
-    items = relationship("Item", back_populates="material")
+    supplies = relationship("Supply", back_populates="material")
+    productions = relationship("Production", back_populates="material")
+    consumables = relationship("Consumable", back_populates="material")
+    

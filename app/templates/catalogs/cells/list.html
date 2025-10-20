@@ -3,18 +3,38 @@
 <div class="max-w-5xl mx-auto">
   <div class="flex justify-between items-center mb-4">
     <h1 class="text-2xl font-bold">Ячейки</h1>
-    <a href="/catalogs/cells/create" class="px-4 py-2 rounded bg-blue-600 text-white">Добавить</a>
+    <a href="/catalogs/cells/create" class="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 transition">Добавить</a>
   </div>
 
-  <ul class="space-y-2">
-    {% for c in rows %}
-      <li class="p-3 rounded border hover:shadow">
-        <a href="/catalogs/cells/{{ c.id }}/">{{ c.name }}</a>
-        <div class="text-sm text-gray-500">Нагрузка: {{ c.capacity }}</div>
-      </li>
-    {% else %}
-      <li class="text-gray-400">Пока пусто</li>
-    {% endfor %}
-  </ul>
+  <div class="overflow-x-auto">
+    <table class="min-w-full border-collapse border border-gray-200">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="p-2 border">Ячейка</th>
+          <th class="p-2 border">Привязанный товар</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in rows %}
+        <tr class="hover:bg-gray-50">
+          <td class="p-2 border">
+            <a href="/catalogs/cells/{{ c.id }}/" class="text-blue-600 hover:underline">{{ c.name }}</a>
+          </td>
+          <td class="p-2 border">
+            {% if c.item %}
+              {{ c.item.name }}
+            {% else %}
+              <span class="text-gray-400">—</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="2" class="text-center text-gray-400 p-3">Пока пусто</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 </div>
 {% endblock %}

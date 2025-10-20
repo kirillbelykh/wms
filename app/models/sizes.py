@@ -6,4 +6,8 @@ class Size(Base):
     __tablename__ = 'sizes'
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True, nullable=False)
-    items = relationship("Item", back_populates="size")
+    
+    supplies = relationship("Supply", back_populates="size")
+    productions = relationship("Production", back_populates="size")
+    consumables = relationship("Consumable", back_populates="size")
+    

@@ -1,0 +1,38 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="max-w-6xl mx-auto py-6">
+  <h1 class="text-2xl font-bold mb-6">Номенклатура</h1>
+
+  {% set categories = [
+    {'name':'Сырье', 'items': supplies, 'href': '/catalogs/supplies/'},
+    {'name':'Готовая продукция', 'items': productions, 'href': '/catalogs/productions/'},
+    {'name':'Расходные материалы', 'items': consumables, 'href': '/catalogs/consumables/'}
+  ] %}
+
+  {% for category in categories %}
+  <div class="mb-8">
+    <h2 class="text-xl font-semibold mb-4">{{ category.name }}</h2>
+    {% if category.items %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      {% for item in category.items %}
+      <a href="{{ category.href }}{{ item.id }}/" 
+         class="block p-4 bg-white rounded-lg shadow hover:shadow-lg hover:bg-blue-50 transition">
+        <div class="font-semibold text-gray-800">{{ item.name }}</div>
+        <div class="text-gray-600 text-sm">
+          Кол-во: {{ item.quantity }} {{ item.unit.name if item.unit else '' }}
+        </div>
+        {% if item.batch %}
+          <div class="text-gray-500 text-xs mt-1">
+            Партия: {{ item.batch.name }}
+          </div>
+        {% endif %}
+      </a>
+      {% endfor %}
+    </div>
+    {% else %}
+      <div class="text-gray-400 italic">Пока нет данных</div>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

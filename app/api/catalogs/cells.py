@@ -48,25 +48,14 @@ async def create_cell(
     consumable_id: int = Form(None),
     db: Session = Depends(get_db),
 ):
-    cell = Cell(name=name, capacity=capacity)
+    cell = Cell(
+        name=name,
+        capacity=capacity,
+        supply_id=supply_id,
+        production_id=production_id,
+        consumable_id=consumable_id,
+    )
     db.add(cell)
-    db.commit()
-    db.refresh(cell)
-
-    # Привязка к номенклатуре
-    if supply_id:
-        supply = db.query(Supply).filter(Supply.id == supply_id).first()
-        if supply:
-            cell.item_id = supply.id
-    elif production_id:
-        production = db.query(Production).filter(Production.id == production_id).first()
-        if production:
-            cell.item_id = production.id
-    elif consumable_id:
-        consumable = db.query(Consumable).filter(Consumable.id == consumable_id).first()
-        if consumable:
-            cell.item_id = consumable.id
-
     db.commit()
     return RedirectResponse("/catalogs/cells/", status_code=status.HTTP_303_SEE_OTHER)
 
@@ -111,16 +100,9 @@ async def update_cell(
 
     cell.name = name
     cell.capacity = capacity
-
-    # Обновляем привязку
-    if supply_id:
-        cell.item_id = supply_id
-    elif production_id:
-        cell.item_id = production_id
-    elif consumable_id:
-        cell.item_id = consumable_id
-    else:
-        cell.item_id = None
+    cell.supply_id = supply_id
+    cell.production_id = production_id
+    cell.consumable_id = consumable_id
 
     db.commit()
     return RedirectResponse(f"/catalogs/cells/{cell_id}/", status_code=status.HTTP_303_SEE_OTHER)

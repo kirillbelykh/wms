@@ -1,0 +1,42 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="max-w-6xl mx-auto py-6">
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="text-2xl font-bold">Расходные материалы</h1>
+    <a href="/catalogs/consumables/create" class="px-4 py-2 bg-blue-600 text-white rounded">Добавить</a>
+  </div>
+
+  <table class="w-full border-collapse text-sm">
+    <thead>
+      <tr class="bg-gray-100 text-left">
+        <th class="p-2 border">Название</th>
+        <th class="p-2 border">Производитель</th>
+        <th class="p-2 border">Материал</th>
+        <th class="p-2 border">Размер</th>
+        <th class="p-2 border">Ячейка</th>
+        <th class="p-2 border">Кол-во</th>
+        <th class="p-2 border">Действия</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in consumables %}
+      <tr class="hover:bg-gray-50">
+        <td class="p-2 border">{{ c.name }}</td>
+        <td class="p-2 border">{{ c.manufacturer.name if c.manufacturer else '—' }}</td>
+        <td class="p-2 border">{{ c.material.name if c.material else '—' }}</td>
+        <td class="p-2 border">{{ c.size.name if c.size else '—' }}</td>
+        <td class="p-2 border">{{ c.cells[0].name if c.cells else '—' }}</td>
+        <td class="p-2 border">{{ c.quantity }}</td>
+        <td class="p-2 border">
+            <a href="/catalogs/consumables/{{ c.id }}/edit" class="text-blue-600 hover:underline">Редактировать</a>
+        </td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="7" class="text-center text-gray-400 p-3">Пусто</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -14,9 +14,15 @@ class Receiving(Base):
     end_at = Column(DateTime, nullable=True)
     comments = Column(String, nullable=True)
 
-    item_id = Column(Integer, ForeignKey("items.id"), nullable=False)
+    supply_id = Column(Integer, ForeignKey("supplies.id"), nullable=True)
+    production_id = Column(Integer, ForeignKey("productions.id"), nullable=True)
+    consumable_id = Column(Integer, ForeignKey("consumables.id"), nullable=True)
+    
+    
     manufacturer_id = Column(Integer, ForeignKey("manufacturers.id"), nullable=True)
-
-    items = relationship("Item", back_populates="receivings")
+    supplies = relationship("Supply", back_populates="receivings")
+    productions = relationship("Production", back_populates="receivings")
+    consumables = relationship("Consumable", back_populates="receivings")
+    
     cells = relationship("Cell", back_populates="receivings")
     manufacturer = relationship("Manufacturer", back_populates="receivings")

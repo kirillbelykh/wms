@@ -4,7 +4,6 @@ from app.database import Base
 from app.models.barcode import Barcode
 from app.models.batches import Batch
 from app.models.cells import Cell
-from app.models.item_base import Item
 from app.models.supply import Supply
 from app.models.consumable import Consumable
 from app.models.production import Production

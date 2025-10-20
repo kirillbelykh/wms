@@ -11,5 +11,8 @@ class Manufacturer(Base):
     description = Column(String, nullable=True)
     country = Column(String, nullable=True)
 
-    items = relationship("Item", back_populates="manufacturer")
+    supplies = relationship("Supply", back_populates="manufacturer")
+    productions = relationship("Production", back_populates="manufacturer")
+    consumables = relationship("Consumable", back_populates="manufacturer")
+    
     receivings = relationship("Receiving", back_populates="manufacturer")

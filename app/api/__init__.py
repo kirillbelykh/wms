@@ -4,8 +4,10 @@ from fastapi import APIRouter
 from app.api.operations.receivings import router as receivings_router
 
 from app.api.catalogs.catalogs import router as catalogs_router
-from app.api.catalogs.items import router as items_router
-from app.api.catalogs.item_types import router as item_types_router
+from app.api.catalogs.supplies import router as supplies_router
+from app.api.catalogs.productions import router as productions_router
+from app.api.catalogs.consumables import router as consumables_router
+from app.api.catalogs.nomenclature import router as nomenclature_router
 from app.api.catalogs.sizes import router as sizes_router
 from app.api.catalogs.cells import router as cells_router
 from app.api.catalogs.manufacturers import router as manufacturers_router
@@ -21,8 +23,10 @@ from app.api.tsd.scan import router as scanner_router
 all_routers = [
     receivings_router,
     catalogs_router,
-    items_router,
-    item_types_router,
+    supplies_router,
+    productions_router,
+    consumables_router,
+    nomenclature_router,
     sizes_router,
     cells_router,
     manufacturers_router,

@@ -10,4 +10,8 @@ class Unit(Base):
     name = Column(String, index=True, nullable=False)
     description = Column(String, nullable=True)
 
-    items = relationship("Item", back_populates="unit")
+    supplies = relationship("Supply", back_populates="unit")
+    productions = relationship("Production", back_populates="unit")
+    consumables = relationship("Consumable", back_populates="unit")
+    
+    

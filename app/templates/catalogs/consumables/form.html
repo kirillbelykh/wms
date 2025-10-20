@@ -1,0 +1,91 @@
+{% macro form_fields(
+    obj=None,
+    sizes=[],
+    cells=[],
+    manufacturers=[],
+    materials=[],
+    units=[],
+    quantity=0
+) %}
+<div class="flex justify-center mt-10">
+  <form method="post" class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-lg space-y-5">
+
+    <h2 class="text-xl font-semibold text-center mb-4">
+      {{ 'Редактирование' if obj else 'Создание' }} расходника
+    </h2>
+
+    <!-- Название и описание -->
+    <div class="space-y-3">
+      <input 
+        name="name" 
+        placeholder="Название" 
+        class="border rounded-lg w-full p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" 
+        value="{{ obj.name if obj else '' }}" required
+      >
+      <input 
+        name="description" 
+        placeholder="Описание" 
+        class="border rounded-lg w-full p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" 
+        value="{{ obj.description if obj else '' }}"
+      >
+    </div>
+
+    <!-- Сетка селектов -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <select name="size_id" class="border rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 focus:outline-none">
+        <option value="">Размер</option>
+        {% for s in sizes %}
+          <option value="{{ s.id }}" {% if obj and obj.size_id == s.id %}selected{% endif %}>{{ s.name }}</option>
+        {% endfor %}
+      </select>
+
+      <select name="cell_id" class="border rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 focus:outline-none">
+        <option value="">Ячейка</option>
+        {% for c in cells %}
+          <option value="{{ c.id }}" {% if obj and obj.cell_id == c.id %}selected{% endif %}>{{ c.name }}</option>
+        {% endfor %}
+      </select>
+
+      <select name="manufacturer_id" class="border rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 focus:outline-none">
+        <option value="">Производитель</option>
+        {% for m in manufacturers %}
+          <option value="{{ m.id }}" {% if obj and obj.manufacturer_id == m.id %}selected{% endif %}>{{ m.name }}</option>
+        {% endfor %}
+      </select>
+
+      <select name="material_id" class="border rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 focus:outline-none">
+        <option value="">Материал</option>
+        {% for m in materials %}
+          <option value="{{ m.id }}" {% if obj and obj.material_id == m.id %}selected{% endif %}>{{ m.name }}</option>
+        {% endfor %}
+      </select>
+
+      <select name="unit_id" class="border rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 focus:outline-none">
+        <option value="">Ед. измерения</option>
+        {% for u in units %}
+          <option value="{{ u.id }}" {% if obj and obj.unit_id == u.id %}selected{% endif %}>{{ u.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Количество -->
+    <input 
+      type="number" 
+      name="quantity" 
+      placeholder="Количество" 
+      class="border rounded-lg w-full p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
+      value="{{ obj.quantity if obj else quantity }}" step="0.01"
+    >
+
+    <!-- Кнопки -->
+    <div class="flex justify-between gap-3 mt-4">
+      <button type="submit" class="bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700 transition">
+        Сохранить
+      </button>
+      <a href="/catalogs/consumables/" class="bg-gray-300 px-5 py-2 rounded-lg hover:bg-gray-400 transition">
+        Отмена
+      </a>
+    </div>
+  </form>
+</div>
+{% endmacro %}

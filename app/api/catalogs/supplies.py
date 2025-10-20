@@ -1,24 +1,22 @@
 from fastapi import APIRouter, Depends, Request, Form, status, HTTPException
-from fastapi.responses import RedirectResponse, HTMLResponse
-from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models import Supply, Size, Cell, Manufacturer, Material, Unit, Batch
+from app.models import Supply, Size, Cell, Manufacturer, Material, Unit
 
-router = APIRouter(
-    prefix="/catalogs/supplies",
-    tags=["catalogs", "supplies"],
-)
+router = APIRouter(prefix="/catalogs/supplies", tags=["supplies"])
 
+# Templates
+from fastapi.templating import Jinja2Templates
 templates = Jinja2Templates(directory="app/templates")
 
-# -------- List Supplies --------
+
 @router.get("/", response_class=HTMLResponse)
 async def list_supplies(request: Request, db: Session = Depends(get_db)):
-    supplies = db.query(Supply).all()
+    supplies = db.query(Supply).order_by(Supply.name).all()
     return templates.TemplateResponse("catalogs/supplies/list.html", {"request": request, "supplies": supplies})
 
-# -------- Create Supply --------
+
 @router.get("/create", response_class=HTMLResponse)
 async def create_supply_form(request: Request, db: Session = Depends(get_db)):
     ctx = {
@@ -28,70 +26,48 @@ async def create_supply_form(request: Request, db: Session = Depends(get_db)):
         "manufacturers": db.query(Manufacturer).all(),
         "materials": db.query(Material).all(),
         "units": db.query(Unit).all(),
-        "batches": db.query(Batch).all(),
         "quantity": 0,
     }
     return templates.TemplateResponse("catalogs/supplies/create.html", ctx)
 
-@router.post("/create", response_class=HTMLResponse)
+
+@router.post("/create")
 async def create_supply(
-    request: Request,
     name: str = Form(...),
     description: str = Form(...),
-    size_id: int = Form(...),
-    cell_id: int = Form(...),
-    manufacturer_id: int = Form(...),
-    material_id: int = Form(...),
-    unit_id: int = Form(...),
-    batch_id: int = Form(...),
-    quantity: float = Form(...),
+    size_id: int = Form(None),
+    cell_id: int = Form(None),
+    manufacturer_id: int = Form(None),
+    material_id: int = Form(None),
+    unit_id: int = Form(None),
+    quantity: float = Form(0),
     db: Session = Depends(get_db),
 ):
-    new_supply = Supply(
+    supply = Supply(
         name=name,
-        size_id=size_id,
-        cell_id=cell_id,
         description=description,
+        size_id=size_id,
         manufacturer_id=manufacturer_id,
         material_id=material_id,
         unit_id=unit_id,
-        batch_id=batch_id,
         quantity=quantity,
     )
-    db.add(new_supply)
+    db.add(supply)
     db.commit()
-    db.refresh(new_supply)
     
     if cell_id:
-        cell = db.query(Cell).filter(Cell.id == cell_id).first()
-        if cell:
-            cell.items = new_supply
-            db.commit()
-            
-    if batch_id:
-        batch = db.query(Batch).filter(Batch.id == batch_id).first()
-        if batch:
-            batch.item = new_supply
-            db.commit()
-            
-    return RedirectResponse(url="/catalogs/supplies/", status_code=status.HTTP_303_SEE_OTHER)
-
-    
-# -------- View Supply Details --------
-@router.get("/{supply_id}", response_class=HTMLResponse)
-async def view_supply(request: Request, supply_id: int, db: Session = Depends(get_db)):
-    supply = db.query(Supply).filter(Supply.id == supply_id).first()
-    if not supply:
-        raise HTTPException(status_code=404, detail="Supply not found")
-    return templates.TemplateResponse("catalogs/supplies/detail.html", {"request": request, "supply": supply})
+        cell = db.get(Cell, cell_id)
+        cell.supply_id = supply.id  # Set FK directly
+        db.commit()
+        
+    return RedirectResponse("/catalogs/supplies/", status_code=status.HTTP_303_SEE_OTHER)
 
 
-# -------- Edit Supply --------
 @router.get("/{supply_id}/edit", response_class=HTMLResponse)
-async def edit_supply_form(request: Request, supply_id: int, db: Session = Depends(get_db)):
-    supply = db.query(Supply).filter(Supply.id == supply_id).first()
+async def edit_supply_form(supply_id: int, request: Request, db: Session = Depends(get_db)):
+    supply = db.get(Supply, supply_id)
     if not supply:
-        raise HTTPException(status_code=404, detail="Supply not found")
+        raise HTTPException(404, "Supply not found")
     ctx = {
         "request": request,
         "supply": supply,
@@ -100,51 +76,48 @@ async def edit_supply_form(request: Request, supply_id: int, db: Session = Depen
         "manufacturers": db.query(Manufacturer).all(),
         "materials": db.query(Material).all(),
         "units": db.query(Unit).all(),
-        "batches": db.query(Batch).all(),
     }
     return templates.TemplateResponse("catalogs/supplies/edit.html", ctx)
 
-@router.post("/{supply_id}/edit", response_class=HTMLResponse)
+
+@router.post("/{supply_id}/edit")
 async def edit_supply(
-    request: Request,
     supply_id: int,
     name: str = Form(...),
     description: str = Form(...),
-    size_id: int = Form(...),
-    cell_id: int = Form(...),
-    manufacturer_id: int = Form(...),
-    material_id: int = Form(...),
-    unit_id: int = Form(...),
-    batch_id: int = Form(...),
-    quantity: float = Form(...),
+    size_id: int = Form(None),
+    cell_id: int = Form(None),
+    manufacturer_id: int = Form(None),
+    material_id: int = Form(None),
+    unit_id: int = Form(None),
+    quantity: float = Form(0),
     db: Session = Depends(get_db),
 ):
-    supply = db.query(Supply).filter(Supply.id == supply_id).first()
+    supply = db.get(Supply, supply_id)
     if not supply:
-        raise HTTPException(status_code=404, detail="Supply not found")
-    
+        raise HTTPException(404, "Supply not found")
+
     supply.name = name
     supply.description = description
     supply.size_id = size_id
-    supply.cell_id = cell_id
     supply.manufacturer_id = manufacturer_id
     supply.material_id = material_id
     supply.unit_id = unit_id
-    supply.batch_id = batch_id
     supply.quantity = quantity
-    
     db.commit()
     
-    return RedirectResponse(url=f"/catalogs/supplies/{supply_id}", status_code=status.HTTP_303_SEE_OTHER)
+    if cell_id:
+        cell = db.get(Cell, cell_id)
+        cell.supply_id = supply.id  # Set FK directly
+        db.commit()
+        
+    return RedirectResponse(f"/catalogs/supplies/{supply_id}", status_code=status.HTTP_303_SEE_OTHER)
 
-# -------- Delete Supply --------
-@router.post("/{supply_id}/delete", response_class=HTMLResponse)
-async def delete_supply(request: Request, supply_id: int, db: Session = Depends(get_db)):
-    supply = db.query(Supply).filter(Supply.id == supply_id).first()
-    if not supply:
-        raise HTTPException(status_code=404, detail="Supply not found")
-    
-    db.delete(supply)
-    db.commit()
-    
-    return RedirectResponse(url="/catalogs/supplies/", status_code=status.HTTP_303_SEE_OTHER)
+
+@router.post("/{supply_id}/delete")
+async def delete_supply(supply_id: int, db: Session = Depends(get_db)):
+    supply = db.get(Supply, supply_id)
+    if supply:
+        db.delete(supply)
+        db.commit()
+    return RedirectResponse("/catalogs/supplies/", status_code=status.HTTP_303_SEE_OTHER)
