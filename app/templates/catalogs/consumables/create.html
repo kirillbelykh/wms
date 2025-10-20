@@ -6,11 +6,7 @@
 <div class="bg-white rounded-2xl shadow p-6">
     {{ form_fields(
         obj=consumable,
-        sizes=sizes,
         cells=cells,
-        manufacturers=manufacturers,
-        materials=materials,
-        units=units,
         quantity=consumable.quantity if consumable else 0
     ) }}
 </div>

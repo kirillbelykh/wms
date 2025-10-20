@@ -19,8 +19,8 @@ async def list_cells(request: Request, db: Session = Depends(get_db)):
         db.query(Cell)
         .options(
             joinedload(Cell.supply),
-            joinedload(Cell.productions),
-            joinedload(Cell.consumables),
+            joinedload(Cell.production),
+            joinedload(Cell.consumable),
         )
         .order_by(Cell.name)
         .all()

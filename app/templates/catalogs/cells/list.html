@@ -1,7 +1,9 @@
 {% extends "index.html" %}
 
 {% block content %}
-<div class="max-w-5xl mx-auto py-6">
+<div class="w-full max-w-full px-6 py-6">
+
+  <!-- Заголовок -->
   <div class="flex justify-between items-center mb-6">
     <h1 class="text-2xl font-bold">Ячейки</h1>
     <a href="/catalogs/cells/create" 
@@ -10,41 +12,114 @@
     </a>
   </div>
 
-  <div class="overflow-x-auto shadow rounded-lg">
-    <table class="min-w-full border border-gray-200 border-collapse text-sm">
-      <thead class="bg-gray-100">
-        <tr>
-          <th class="p-2 border text-left">Ячейка</th>
-          <th class="p-2 border text-left">Привязанный товар</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for c in rows %}
-        <tr class="hover:bg-gray-50 transition">
-          <td class="p-2 border">
-            <a href="/catalogs/cells/{{ c.id }}/" class="hover:underline text-gray-800 font-medium">
-              {{ c.name }}
-            </a>
-          </td>
-          <td class="p-2 border">
-            {% if c.supply %}
-              <span class="text-green-600 font-semibold">{{ c.supply.name }}</span>
-            {% elif c.production %}
-              <span class="text-blue-600 font-semibold">{{ c.production.name }}</span>
-            {% elif c.consumable %}
-              <span class="text-yellow-600 font-semibold">{{ c.consumable.name }}</span>
+  <!-- Три таблицы в ряд -->
+  <div class="flex gap-12 overflow-x-auto">
+
+    <!-- ====================== -->
+    <!-- Сырье -->
+    <!-- ====================== -->
+    <div class="flex-1 min-w-[320px]">
+      <h2 class="text-lg font-semibold mb-2 text-green-700">Сырье</h2>
+      <div class="overflow-x-auto shadow rounded-lg">
+        <table class="min-w-full border border-gray-200 border-collapse text-sm">
+          <thead class="bg-green-100">
+            <tr>
+              <th class="p-2 border text-left">Ячейка</th>
+              <th class="p-2 border text-left">Привязанный товар</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in rows if c.supply %}
+            <tr class="hover:bg-green-50 transition">
+              <td class="p-2 border">{{ c.name }}</td>
+              <td class="p-2 border">
+                {{ c.supply.manufacturer.name if c.supply.manufacturer else '—' }} - 
+                {{ c.supply.name }} - 
+                {{ c.supply.material.name if c.supply.material else '—' }} - 
+                {{ c.supply.size.name if c.supply.size else '—' }} - 
+                {{ c.supply.quantity }}
+              </td>
+            </tr>
             {% else %}
-              <span class="text-gray-400">—</span>
-            {% endif %}
-          </td>
-        </tr>
-        {% else %}
-        <tr>
-          <td colspan="2" class="text-center text-gray-400 p-3">Пока пусто</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+            <tr>
+              <td colspan="2" class="text-center text-gray-400 p-2">Пусто</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ====================== -->
+    <!-- Готовая продукция -->
+    <!-- ====================== -->
+    <div class="flex-1 min-w-[320px]">
+      <h2 class="text-lg font-semibold mb-2 text-blue-700">Готовая продукция</h2>
+      <div class="overflow-x-auto shadow rounded-lg">
+        <table class="min-w-full border border-gray-200 border-collapse text-sm">
+          <thead class="bg-blue-100">
+            <tr>
+              <th class="p-2 border text-left">Ячейка</th>
+              <th class="p-2 border text-left">Привязанный товар</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in rows if c.production %}
+            <tr class="hover:bg-blue-50 transition">
+              <td class="p-2 border">{{ c.name }}</td>
+              <td class="p-2 border">
+                {{ c.production.manufacturer.name if c.production.manufacturer else '—' }} - 
+                {{ c.production.name }} - 
+                {{ c.production.material.name if c.production.material else '—' }} - 
+                {{ c.production.size.name if c.production.size else '—' }} - 
+                {{ c.production.quantity }}
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="2" class="text-center text-gray-400 p-2">Пусто</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ====================== -->
+    <!-- Расходники -->
+    <!-- ====================== -->
+    <div class="flex-1 min-w-[320px]">
+      <h2 class="text-lg font-semibold mb-2 text-yellow-700">Расходники</h2>
+      <div class="overflow-x-auto shadow rounded-lg">
+        <table class="min-w-full border border-gray-200 border-collapse text-sm">
+          <thead class="bg-yellow-100">
+            <tr>
+              <th class="p-2 border text-left">Ячейка</th>
+              <th class="p-2 border text-left">Привязанный товар</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in rows if c.consumable %}
+            <tr class="hover:bg-yellow-50 transition">
+              <td class="p-2 border">{{ c.name }}</td>
+              <td class="p-2 border">
+                {{ c.consumable.manufacturer.name if c.consumable.manufacturer else '—' }} - 
+                {{ c.consumable.name }} - 
+                {{ c.consumable.material.name if c.consumable.material else '—' }} - 
+                {{ c.consumable.size.name if c.consumable.size else '—' }} - 
+                {{ c.consumable.quantity }}
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="2" class="text-center text-gray-400 p-2">Пусто</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
   </div>
 </div>
 {% endblock %}

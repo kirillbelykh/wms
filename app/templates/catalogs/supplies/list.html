@@ -9,8 +9,8 @@
   <table class="w-full border-collapse text-sm">
     <thead>
       <tr class="bg-gray-100 text-left">
-        <th class="p-2 border">Название</th>
         <th class="p-2 border">Производитель</th>
+        <th class="p-2 border">Название</th>
         <th class="p-2 border">Материал</th>
         <th class="p-2 border">Размер</th>
         <th class="p-2 border">Ячейка</th>
@@ -21,8 +21,8 @@
     <tbody>
       {% for s in supplies %}
       <tr class="hover:bg-gray-50">
-        <td class="p-2 border">{{ s.name }}</td>
         <td class="p-2 border">{{ s.manufacturer.name if s.manufacturer else '—' }}</td>
+        <td class="p-2 border">{{ s.name }}</td>
         <td class="p-2 border">{{ s.material.name if s.material else '—' }}</td>
         <td class="p-2 border">{{ s.size.name if s.size else '—' }}</td>
         <td class="p-2 border">{{ s.cells[0].name if s.cells else '—' }}</td>

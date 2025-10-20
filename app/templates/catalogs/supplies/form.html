@@ -5,7 +5,6 @@
     manufacturers=[],
     materials=[],
     units=[],
-    batches=[],
     quantity=0
 ) %}
 <div class="flex justify-center mt-10">
@@ -18,11 +17,38 @@
     <!-- Название и описание -->
     <div class="space-y-3">
       <input 
+        list="name-options"
         name="name" 
         placeholder="Название" 
         class="border rounded-lg w-full p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none" 
         value="{{ obj.name if obj else '' }}" required
       >
+      <datalist id="name-options">
+        <option value="Гинекология">
+        <option value="Двойная пара">
+        <option value="1-Хлор">
+        <option value="2-Хлор">
+        <option value="HR">
+        <option value="Анатомический">
+        <option value="Диагностический">
+        <option value="Диаг Гладкие">
+        <option value="С Полимерным">
+        <option value="Удлиненный">
+        <option value="Микрохирургия">
+        <option value="Диаг HR Короткий">
+        <option value="Диагноз HR Удлиненный">
+        <option value="Ортопедия">
+        <option value="Стерильный">
+        <option value="Стерильный 1-Хлор">
+        <option value="Стерильный 2-Хлор">
+        <option value="Ультра">
+        <option value="Хирургия">
+        <option value="Хирургия 1-Хлор">
+        <option value="Хирургия 2-Хлор">
+        <option value="Хирургия Изопрен">
+        <option value="Хирургия С Полимерным">
+    </datalist>
+
       <input 
         name="description" 
         placeholder="Описание" 
@@ -31,19 +57,12 @@
       >
     </div>
 
-    <!-- Сетка селектов -->
+    <!-- Сетка селектов: Материал → Производитель → Размер → Ед. изм. → Кол-во → Ячейка -->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-      <select name="size_id" class="border rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 focus:outline-none">
-        <option value="">Размер</option>
-        {% for s in sizes %}
-          <option value="{{ s.id }}" {% if obj and obj.size_id == s.id %}selected{% endif %}>{{ s.name }}</option>
-        {% endfor %}
-      </select>
-
-      <select name="cell_id" class="border rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 focus:outline-none">
-        <option value="">Ячейка</option>
-        {% for c in cells %}
-          <option value="{{ c.id }}" {% if obj and obj.cell_id == c.id %}selected{% endif %}>{{ c.name }}</option>
+      <select name="material_id" class="border rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 focus:outline-none">
+        <option value="">Материал</option>
+        {% for m in materials %}
+          <option value="{{ m.id }}" {% if obj and obj.material_id == m.id %}selected{% endif %}>{{ m.name }}</option>
         {% endfor %}
       </select>
 
@@ -54,10 +73,10 @@
         {% endfor %}
       </select>
 
-      <select name="material_id" class="border rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 focus:outline-none">
-        <option value="">Материал</option>
-        {% for m in materials %}
-          <option value="{{ m.id }}" {% if obj and obj.material_id == m.id %}selected{% endif %}>{{ m.name }}</option>
+      <select name="size_id" class="border rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 focus:outline-none">
+        <option value="">Размер</option>
+        {% for s in sizes %}
+          <option value="{{ s.id }}" {% if obj and obj.size_id == s.id %}selected{% endif %}>{{ s.name }}</option>
         {% endfor %}
       </select>
 
@@ -68,16 +87,21 @@
         {% endfor %}
       </select>
 
-    </div>
+      <input 
+        type="number" 
+        name="quantity" 
+        placeholder="Количество" 
+        class="border rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 focus:outline-none"
+        value="{{ obj.quantity if obj else quantity }}" step="0.01"
+      >
 
-    <!-- Количество -->
-    <input 
-      type="number" 
-      name="quantity" 
-      placeholder="Количество" 
-      class="border rounded-lg w-full p-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-      value="{{ obj.quantity if obj else quantity }}" step="0.01"
-    >
+      <select name="cell_id" class="border rounded-lg p-2 w-full focus:ring-2 focus:ring-blue-400 focus:outline-none">
+        <option value="">Ячейка</option>
+        {% for c in cells %}
+          <option value="{{ c.id }}" {% if obj and obj.cell_id == c.id %}selected{% endif %}>{{ c.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
 
     <!-- Кнопки -->
     <div class="flex justify-between gap-3 mt-4">
@@ -87,6 +111,14 @@
       <a href="/catalogs/supplies/" class="bg-gray-300 px-5 py-2 rounded-lg hover:bg-gray-400 transition">
         Отмена
       </a>
+
+      {% if obj %}
+      <form method="post" action="/catalogs/supplies/{{ obj.id }}/delete" onsubmit="return confirm('Удалить запись?');">
+        <button type="submit" class="bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700 transition">
+          Удалить
+        </button>
+      </form>
+      {% endif %}
     </div>
   </form>
 </div>

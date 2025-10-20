@@ -16,7 +16,7 @@ class Consumable(Base):
     unit_id = Column(Integer, ForeignKey("units.id"), nullable=True)
 
     size = relationship("Size", back_populates="consumables")
-    cell = relationship("Cell", back_populates="consumables")
+    cell = relationship("Cell", back_populates="consumable")
     manufacturer = relationship("Manufacturer", back_populates="consumables")
     material = relationship("Material", back_populates="consumables")
     unit = relationship("Unit", back_populates="consumables")

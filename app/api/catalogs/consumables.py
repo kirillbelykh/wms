@@ -94,11 +94,16 @@ async def edit_consumable_form(request: Request, consumable_id: int, db: Session
     consumable = db.query(Consumable).filter(Consumable.id == consumable_id).first()
     if not consumable:
         raise HTTPException(404, "Consumable not found")
+
+    # Находим ячейку, где этот расходник уже установлен
+    cell = db.query(Cell).filter(Cell.consumable_id == consumable.id).first()
+
     ctx = {
         "request": request,
         "consumable": consumable,
-        "sizes": db.query(Size).all(),
+        "cell": cell,
         "cells": db.query(Cell).all(),
+        "sizes": db.query(Size).all(),
         "manufacturers": db.query(Manufacturer).all(),
         "materials": db.query(Material).all(),
         "units": db.query(Unit).all(),
@@ -106,10 +111,9 @@ async def edit_consumable_form(request: Request, consumable_id: int, db: Session
     return templates.TemplateResponse("catalogs/consumables/edit.html", ctx)
 
 
-# Edit Consumable
-@router.post("/{consumable_id}/edit", response_class=HTMLResponse)
+# Edit Consumable POST
+@router.post("/{consumable_id}/edit")
 async def edit_consumable(
-    request: Request,
     consumable_id: int,
     name: str = Form(...),
     description: str = Form(...),
@@ -132,17 +136,21 @@ async def edit_consumable(
     consumable.material_id = parse_optional_int(material_id)
     consumable.unit_id = parse_optional_int(unit_id)
     consumable.quantity = quantity
-    db.commit()
 
+    # Привязываем к новой ячейке
     cell_id_parsed = parse_optional_int(cell_id)
     if cell_id_parsed:
-        cell = db.query(Cell).filter(Cell.id == cell_id_parsed).first()
-        if cell:
-            cell.consumable_id = consumable.id
-            db.commit()
+        # Сначала удаляем старую связь
+        old_cells = db.query(Cell).filter(Cell.consumable_id == consumable.id).all()
+        for c in old_cells:
+            c.consumable_id = None
 
-    return RedirectResponse(f"/catalogs/consumables", status_code=status.HTTP_303_SEE_OTHER)
+        new_cell = db.query(Cell).filter(Cell.id == cell_id_parsed).first()
+        if new_cell:
+            new_cell.consumable_id = consumable.id
 
+    db.commit()
+    return RedirectResponse("/catalogs/consumables/", status_code=status.HTTP_303_SEE_OTHER)
 
 # Delete Consumable
 @router.post("/{consumable_id}/delete", response_class=HTMLResponse)

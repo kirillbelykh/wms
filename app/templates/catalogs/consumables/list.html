@@ -11,8 +11,6 @@
       <tr class="bg-gray-100 text-left">
         <th class="p-2 border">Название</th>
         <th class="p-2 border">Производитель</th>
-        <th class="p-2 border">Материал</th>
-        <th class="p-2 border">Размер</th>
         <th class="p-2 border">Ячейка</th>
         <th class="p-2 border">Кол-во</th>
         <th class="p-2 border">Действия</th>
@@ -22,8 +20,6 @@
       {% for item in items %}
       <tr class="hover:bg-gray-50">
         <td class="p-2 border">{{ item.consumable.name }}</td>
-        <td class="p-2 border">{{ item.consumable.manufacturer.name if item.consumable.manufacturer else '—' }}</td>
-        <td class="p-2 border">{{ item.consumable.material.name if item.consumable.material else '—' }}</td>
         <td class="p-2 border">{{ item.consumable.size.name if item.consumable.size else '—' }}</td>
         <td class="p-2 border">{{ item.cell.name if item.cell else '—' }}</td>
         <td class="p-2 border">{{ item.consumable.quantity }}</td>

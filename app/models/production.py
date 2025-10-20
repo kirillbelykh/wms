@@ -19,7 +19,7 @@ class Production(Base):
     
 
     batches = relationship("Batch", back_populates="production")
-    cell = relationship("Cell", back_populates="productions")
+    cell = relationship("Cell", back_populates="production")
     manufacturer = relationship("Manufacturer", back_populates="productions")
     material = relationship("Material", back_populates="productions")
     size = relationship("Size", back_populates="productions")

@@ -17,8 +17,8 @@ class Cell(Base):
     receiving_id = Column(Integer, ForeignKey("receivings.id"), nullable=True)
 
     supply = relationship("Supply", back_populates="cells")  # Corrected: scalar for one supply
-    productions = relationship("Production", back_populates="cell")
-    consumables = relationship("Consumable", back_populates="cell")
+    production = relationship("Production", back_populates="cell")
+    consumable = relationship("Consumable", back_populates="cell")
     batches = relationship("Batch", back_populates="cell")
     barcode = relationship("Barcode", back_populates="cell")
     receivings = relationship("Receiving", back_populates="cells")
