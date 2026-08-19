@@ -44,12 +44,13 @@ Requirements: Python 3.12 and [uv](https://docs.astral.sh/uv/).
 
 ```bash
 cp .env.example .env
+# fill every required value in .env
 uv sync --dev
 uv run alembic upgrade head
 uv run uvicorn backend.app.main:app --reload
 ```
 
-By default the example environment expects local PostgreSQL and Redis instances. Tests use an isolated in-memory SQLite database and disable external integrations.
+Set `DATABASE_URL`, `SECRET_KEY`, the PostgreSQL and Redis connection values, authentication limits, CORS origins and local integration settings before starting the service. Empty assignments in `.env.example` are intentional: the repository does not prescribe or publish deployment data. Tests use an isolated in-memory SQLite database and disable external integrations.
 
 ## Local frontend
 
@@ -83,10 +84,11 @@ Ruff, mypy and ESLint configurations are retained for incremental cleanup, but t
 
 ## Deployment model
 
-`docker-compose.prod.yml` describes the production topology: PostgreSQL, Redis, the FastAPI service and an Nginx-served frontend. Before using it, copy `.env.example` to `.env.prod`, replace every placeholder, and provide TLS certificates at the paths referenced by `nginx/nginx.conf`.
+`docker-compose.prod.yml` describes the production topology: PostgreSQL, Redis, the FastAPI service and an Nginx-served frontend. Before using it, copy `.env.example` to `.env.prod`, fill every value, replace `wms.example.com` in `nginx/nginx.conf` with the real host, and provide the matching TLS certificates.
 
 ```bash
 cp .env.example .env.prod
+# fill .env.prod and adapt nginx/nginx.conf before continuing
 docker compose -f docker-compose.prod.yml config
 docker compose -f docker-compose.prod.yml up -d --build
 ```
