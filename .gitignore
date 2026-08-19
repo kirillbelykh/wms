@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+certbot/
+
+# Runtime data
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+backups/
+uploads/
+token.json
+
+# Local tooling and system files
+.DS_Store
+.codex/
+.codex_history
+.idea/
+.vscode/
+*.bak
+*.log
